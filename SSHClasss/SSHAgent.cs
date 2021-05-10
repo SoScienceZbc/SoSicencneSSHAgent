@@ -94,14 +94,14 @@ namespace SoSicencneSSHAgent.SSHClasss
     {
         private SshClient client;
         private ForwardedPortLocal port;
-        private int localPort;
+        private int localPort = 1;
         public int LocalPort { get { return localPort; } }
         public SshTunnel(ForwardedPortLocal forwardedPort, SshClient client)
         {
             // ("192.168.1.100", 7557, @"192.168.0.220");  
             port = forwardedPort;
             this.client = client;
-            StartSshtunnel(22, 0, "127.0.0.0");
+            StartSshtunnel(22, 0, "127.0.0.1");
         }
         //remotePort is the port whihce to hit via the ssh tunnel
         //note the "hack" this have been done to ensure a more flexbly asignment of the ports when the connection comes in.

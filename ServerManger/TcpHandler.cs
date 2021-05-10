@@ -3,6 +3,8 @@ using SoScienceDataServer;
 using SoSicencneSSHAgent.CryptoLogic;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
@@ -17,13 +19,18 @@ namespace SoSicencneSSHAgent.ServerManger
 
         private object[] readWriteLock = new object[] { new object(), new object() };
         private System.Timers.Timer timer;
-        private Socket socket;
+        //private Socket socket;
         private Receiver receiver;
         private NetworkStream stream;
         private TcpClient client;
-        private readonly List<Task> Tasks = new List<Task>();
+        //private readonly List<Task> Tasks = new List<Task>();
         public bool run = true;
         private readonly int buffersize = 1400;
+
+        public async void StartThread(object args)
+        {
+            await Start();
+        }
 
         /// <summary>
         /// starts the connection with the proxy server
@@ -31,8 +38,10 @@ namespace SoSicencneSSHAgent.ServerManger
         /// <param name="ip">the ip of the server </param>
         /// <param name="port">the port the server is lising to</param>
         /// <param name="db">the data base name</param>
-        public async Task Start(string ip, int port, string db)
+        public async Task Start(string ip = "40.87.150.18", int port = 7557, string db = "null")
         {
+            if (db == "null")
+                db = GetLocalIPAddress();
             // Creates the Timer for the heartbeat
             timer = new System.Timers.Timer(10000);
             timer.AutoReset = true;
@@ -60,7 +69,7 @@ namespace SoSicencneSSHAgent.ServerManger
                             {
                                 // starts a task with a request from the server
                                 //_ = SendAsync(receiver.RunAsync(Read()));                                
-                                await Task.FromResult(SendAsync(receiver.RunAsync(Read())));                                
+                                await Task.FromResult(SendAsync(receiver.RunAsync(Read())));
                             }
                             catch (Exception e)
                             {
@@ -80,6 +89,7 @@ namespace SoSicencneSSHAgent.ServerManger
                 }
             }
         }
+
         /// <summary>
         /// Sendes a heartbeat to the proxy server looks if servers heartbeat is valid 
         /// </summary>
@@ -119,7 +129,7 @@ namespace SoSicencneSSHAgent.ServerManger
             {
                 foreach (Message message in data)
                 {
-                                       
+
                     Send(message.ToByteArray());
 
                     if (message.MessageType == Message.Types.MessageType.Part)
@@ -264,6 +274,18 @@ namespace SoSicencneSSHAgent.ServerManger
                 stream.Close();
             if (client != null)
                 client.Close();
+        }
+
+        private string GetLocalIPAddress()
+        {
+            if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
+            {
+                return null;
+            }
+
+            IPHostEntry host = Dns.GetHostEntry(Dns.GetHostName());
+
+            return host.AddressList.FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork).ToString();
         }
     }
 }
