@@ -1,4 +1,5 @@
 ﻿using Renci.SshNet;
+using Renci.SshNet.Common;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,55 +9,80 @@ using System.Threading.Tasks;
 
 namespace SoSicencneSSHAgent.SSHClasss
 {
-    class SSHAgent
+    public class SSHAgent : IDisposable
     {
         #region Fields
-        SshClient sshclient;
+
+        SshClient clientS;
         SshCommand sc;
         ShellStream stream;
         ConnectionInfo connectionInfo;
+
+        #region TestSSH Parms
+        /*This is for testing ssh towards a test serve.*/
+        //string sshServer = "192.168.1.102";
+        // string username = "root";
+        //string password = "skpit4200!"; // SSh use RSA keyauth so password is not used.
+        #endregion
+
         string sshServer = "40.87.150.18";
         int port = 22;
-       // string username = "root";
         string username = "SoScienceUser";
-        //string password = "skpit4200!"; // SSh use RSA keyauth so password is not used.
         #endregion
         #region Construtor
         public SSHAgent()
         {
-            connectionInfo = new ConnectionInfo(sshServer, port, username, new PrivateKeyAuthenticationMethod(username, new PrivateKeyFile("SoScienceServer_key.pem")));
-            sshclient = new SshClient(connectionInfo);
+            connectionInfo =
+                new ConnectionInfo(
+                sshServer,
+                port,
+                username,
+                new PrivateKeyAuthenticationMethod(username, new PrivateKeyFile("SoScienceServer_key.pem")));
+
+            clientS = new SshClient(connectionInfo);
+            //CreateSshTunnel();
         }
         #endregion
         #region methoeds        
         public void ConnnectToSShServer()
         {
-            Console.WriteLine($"Trying to connect to ssh server {sshServer} on {port}");
-            PrivateKeyFile keyFile = new PrivateKeyFile("SoScienceServer_key.pem");
-            sshclient = new SshClient(new ConnectionInfo(sshServer, 7557, username, new PrivateKeyAuthenticationMethod(username, keyFile)));
-            sshclient.Connect();
+            clientS.Connect();
         }
         public void CreateSshStream()
         {
-            if (!sshclient.IsConnected)
+
+            if (!clientS.IsConnected)
             {
                 ConnnectToSShServer();
             }
 
-            Console.WriteLine($"{sshclient.ConnectionInfo.Username } : Is connected");
-            sc = sshclient.CreateCommand("ps -aux -f -all");
+            Console.WriteLine($"{clientS.ConnectionInfo.Username } : Is connected");
+            sc = clientS.CreateCommand("ps -aux -f -all");
             sc.Execute();
-            stream = sshclient.CreateShellStream("ps -aux -f -all", 80, 24, 800, 600, 2048);
+            stream = clientS.CreateShellStream("ps -aux -f -all", 80, 24, 800, 600, 2048);
             string answer = sc.Result;
             Console.WriteLine(answer);
 
         }
         public void CreateSshTunnel()
         {
-            SshTunnel sshtunnel = new SshTunnel(new ForwardedPortLocal(0, "127.0.0.0", 2002), this.sshclient);
-        }        
+            //sendCommand("ssh -N -T -R 5000:localhost:33700 40.87.150.18");
+            //sendCommand("ssh -R 33700:localhost:33700 SoScienceUser@40.87.150.18");
+
+            //sendCommand("ssh -T -p 33700 SoScienceUser@localhost");
+
+            SshTunnel sshtunnel = new SshTunnel(this.clientS);
+        }
+        #endregion
+        #region SSHCommands
+        /// <summary>
+        /// this sends ssh commands
+        /// </summary>
+        /// <param name="customCMD"></param>
+        /// <returns></returns>
         public string sendCommand(string customCMD)
         {
+            CreateSshStream();
             StringBuilder answer;
 
             var reader = new StreamReader(stream);
@@ -67,6 +93,12 @@ namespace SoSicencneSSHAgent.SSHClasss
             return answer.ToString();
         }
 
+        /// <summary>
+        /// This writes to the stream
+        /// </summary>
+        /// <param name="cmd"></param>
+        /// <param name="writer"></param>
+        /// <param name="stream"></param>
         private void WriteStream(string cmd, StreamWriter writer, ShellStream stream)
         {
             writer.WriteLine(cmd);
@@ -76,6 +108,11 @@ namespace SoSicencneSSHAgent.SSHClasss
             }
         }
 
+        /// <summary>
+        /// This reads the stream.
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <returns></returns>
         private StringBuilder ReadStream(StreamReader reader)
         {
             StringBuilder result = new StringBuilder();
@@ -88,76 +125,121 @@ namespace SoSicencneSSHAgent.SSHClasss
             return result;
         }
         #endregion
+
+
+        #region Methods
+        /// <summary>
+        /// This the to start the protforwarding.
+        /// remotePort is the port whihce to hit via the ssh tunnel
+        /// </summary>
+        public void Dispose()
+        {
+            if (clientS != null)
+                clientS.Dispose();
+        }
+        #endregion
     }
 
-    class SshTunnel : IDisposable
+    class SshTunnel
     {
+        #region Fields
         private SshClient client;
-        private ForwardedPortLocal port;
-        private int localPort = 1;
-        public int LocalPort { get { return localPort; } }
-        public SshTunnel(ForwardedPortLocal forwardedPort, SshClient client)
+        #endregion
+        #region Construtor
+        public SshTunnel(SshClient client)
         {
             // ("192.168.1.100", 7557, @"192.168.0.220");  
-            port = forwardedPort;
             this.client = client;
-            StartSshtunnel(22, 0, "127.0.0.1");
+            StartSshtunnel();
         }
-        //remotePort is the port whihce to hit via the ssh tunnel
-        //note the "hack" this have been done to ensure a more flexbly asignment of the ports when the connection comes in.
-        public void StartSshtunnel(int? remotePort, int localport, string localhostIp)
+        #endregion
+        #region Methods
+        /// <summary>
+        /// This the to start the protforwarding.
+        /// remotePort is the port whihce to hit via the ssh tunnel
+        /// </summary>
+        public void StartSshtunnel()
         {
             try
             {
-                //string RemoteHost = "40.87.150.18";
-                string localBoundHost = "127.0.0.1";
-                //int remoteHostPort = 22;
-                //client = new SshClient(connectionInfo);
-                // boundport is the port to accsse on the remote server,
-                //port = new ForwardedPortLocal(localBoundHost, RemoteHost, (uint)remoteHostPort);
-                //ForwardedPortDynamic port = new ForwardedPortDynamic(RemoteHost,22);                
-                ForwardedPortDynamic port = new ForwardedPortDynamic(localBoundHost,7557);      
-                client.Connect();
-                client.AddForwardedPort(port);               
-                port.Start();
+                if (!client.IsConnected)
+                {
 
-                if (port.IsStarted && client.IsConnected)
+                    client.Connect();
+                }
+                ForwardedPortRemote portRemote = new ForwardedPortRemote(System.Net.IPAddress.Parse("127.0.0.1"), 33700, System.Net.IPAddress.Loopback, 33701);
+                //ForwardedPortRemote portRemote = new ForwardedPortRemote(5002,"127.0.0.1",33700);
+                //ForwardedPortLocal port = new ForwardedPortLocal(33700, client.ConnectionInfo.Host, 33700);
+                portRemote.RequestReceived += new EventHandler<PortForwardEventArgs>(port_Request);
+                //port.RequestReceived += new EventHandler<PortForwardEventArgs>(portL_Request);
+                portRemote.Exception += new EventHandler<ExceptionEventArgs>(Port_Ex);
+                //client.AddForwardedPort(port);
+                client.KeepAliveInterval = TimeSpan.FromSeconds(10);
+                client.AddForwardedPort(portRemote);
+                foreach (var item in client.ForwardedPorts)
+                {
+                    item.Start();
+                }
+
+                if (portRemote.IsStarted && client.IsConnected)
                 {
 
 
+                    Console.WriteLine("BoundHost: " + portRemote.BoundHost);
+                    Console.WriteLine("BoundPort:" + portRemote.BoundPort);
                     Console.WriteLine($"Clinet Infomation : {client.ConnectionInfo.Username}\n" +
                         $"Host : {client.ConnectionInfo.Host}\nProxyHost: {client.ConnectionInfo.ProxyHost} The tunnel have been createde..");
-
+                    //while (client.IsConnected)
+                    //{
+                    //    Thread.Sleep(30000);
+                    //    client.SendKeepAlive();
+                    //}
                 }
                 else
                 {
                     Console.WriteLine("nop");
                 }
-
-                //TODO:Fix the dynamically allocated clietn port when there is time for it..
-                // HACK to get the dynamically allocated client port
-                //var listener = (TcpListener)typeof(ForwardedPortLocal).GetField("_listener", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(port);
-                //localPort = ((System.Net.IPEndPoint)listener.LocalEndpoint).Port;
             }
             catch
             {
+                client.Disconnect();
+                client.Dispose();
                 Dispose();
                 throw;
             }
         }
-
-
         public void Dispose()
         {
-            if (port != null)
-                port.Dispose();
             if (client != null)
                 client.Dispose();
         }
+        #endregion
+
+        #region Events
+        public void port_Request(object sender, PortForwardEventArgs s)
+        {
+            ForwardedPortRemote senders = (ForwardedPortRemote)sender;
+
+            Console.WriteLine($"PortRemote: {s.OriginatorHost} :{s.OriginatorPort}\ncallerHost: {senders.Host}" +
+                $"\nCallerBoundPort: {senders.BoundPort}\nForwardRemotePortStarteted: {senders.IsStarted}");
+        }
+        public void portL_Request(object sender, PortForwardEventArgs s)
+        {
+
+            ForwardedPortLocal senders = (ForwardedPortLocal)sender;
+            Console.WriteLine($"PortRemote: {s.OriginatorHost} :{s.OriginatorPort}\ncallerHost: {senders.Host}" +
+                $"\nCallerBoundPort: {senders.BoundPort}\nForwardRemotePortStarteted: {senders.IsStarted}");
+        }
+        public void Port_Ex(object sender, ExceptionEventArgs s)
+        {
+            Console.WriteLine("Exaction" + s.Exception.Message);
+        }
+        #endregion
     }
+
     #region sshmysqlagent_Testing
     public class sshMysqlAgent
-    {       
+    {
         public static (SshClient SshClient, uint Port) ConnectSsh(string sshHostName, string sshUserName, string sshPassword = null,
             string sshKeyFile = null, string sshPassPhrase = null, int sshPort = 22, string databaseServer = "localhost", int databasePort = 3306)
         {

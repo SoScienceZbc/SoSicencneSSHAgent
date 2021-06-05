@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading;
-using SoSicencneSSHAgent.ServerManger;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using SoSicencneSSHAgent.MicroServices;
 using SoSicencneSSHAgent.SSHClasss;
 
 namespace SoSicencneSSHAgent
@@ -9,23 +11,22 @@ namespace SoSicencneSSHAgent
     {
         static void Main(string[] args)
         {
-
-
-            //PemReader.PemReaderHandler key = new PemReader.PemReaderHandler();
-            //key.GetKey();
             SSHAgent agent = new SSHAgent();
-            agent.CreateSshTunnel();
-            ThreadPool.QueueUserWorkItem(new TcpHandler().StartThread);
-            Console.WriteLine("Wait it is a background services.");
+            Thread th = new Thread(agent.CreateSshTunnel);
+            th.Start();
+            CreateHostBuilder(args).Build().StartAsync();
+            Console.WriteLine("Wait A thread has started as a background services.");
             Console.ReadLine();
-            //agent.CreateSshTunnel();
-            //agent.CreateSshStream();
-            //while (true)
-            //{
-            //    string userinput = Console.ReadLine();
-            //    Console.WriteLine(agent.sendCommand(userinput));
-            //}
+
+
 
         }
+
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+           Host.CreateDefaultBuilder(args).ConfigureServices((hostContext, services) =>
+           {               
+               services.AddHostedService<MicroServicesSetUp>();
+
+           });
     }
 }

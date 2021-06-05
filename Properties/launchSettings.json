@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "SoSicencneSSHAgent": {
+      "commandName": "Project",
+      "remoteDebugEnabled": false,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+option csharp_namespace = "Proto";
+package LoginGRPC;
+
+service LoginServcie {
+  rpc LoginAD(LoginRequset) returns (LoginRepley) {}
+}
+
+message LoginRequset {
+string username = 1;
+string password = 2;
+}
+
+message LoginRepley {
+	bool loginSucsefull = 1;
+}

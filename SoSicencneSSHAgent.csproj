@@ -1,20 +1,31 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Google.Protobuf" Version="3.16.0" />
-    <PackageReference Include="SSH.NET" Version="2020.0.1" />
-    <PackageReference Include="System.Security.Cryptography.Cng" Version="5.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="PemReader\SoScienceServer_key.pem">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Google.Protobuf" Version="3.17.2" />
+		<PackageReference Include="Grpc.AspNetCore" Version="2.37.0" />
+		<PackageReference Include="Grpc.AspNetCore.Server" Version="2.37.0" />
+		<PackageReference Include="Grpc.AspNetCore.Web" Version="2.37.0" />
+		<PackageReference Include="Grpc.Net.Client" Version="2.37.0" />
+		<PackageReference Include="Grpc.Net.Client.Web" Version="2.37.0" />
+		<PackageReference Include="Grpc.Tools" Version="2.38.0">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.AspNetCore.Server.Kestrel.Core" Version="2.2.0" />
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="5.0.0" />
+		<PackageReference Include="SSH.NET" Version="2020.0.1" />
+		<PackageReference Include="System.DirectoryServices.Protocols" Version="5.0.0" />
+		<PackageReference Include="System.Security.Cryptography.Cng" Version="5.0.0" />
+	</ItemGroup>
+	<ItemGroup>
+		<Protobuf Include="Protos\Database.proto" />
+		<Protobuf Include="Protos\AdLookupProto.proto" />
+	</ItemGroup>
 
 </Project>
