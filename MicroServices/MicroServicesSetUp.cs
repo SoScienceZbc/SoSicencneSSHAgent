@@ -28,7 +28,7 @@ namespace SoSicencneSSHAgent.MicroServices
                 //o.UseKestrel()
                 o.UseKestrel().UseStartup<GrpcAgentStartUp>().ConfigureKestrel(k => 
                 { 
-                    k.Listen(System.Net.IPAddress.Loopback, 33700, kj => {
+                    k.Listen(System.Net.IPAddress.Any, 33700, kj => {
                         kj.Protocols = HttpProtocols.Http1;                        
                     });
                     k.Listen(System.Net.IPAddress.Any,33701,kj => {
