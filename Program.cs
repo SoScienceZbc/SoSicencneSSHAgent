@@ -12,7 +12,6 @@ namespace SoSicencneSSHAgent
         static void Main(string[] args)
         {
             SSHAgent agent = new SSHAgent();
-            //agent.CreateSshTunnel();
             Thread th = new Thread(agent.CreateSshTunnel);
             th.Start();
             CreateHostBuilder(args).Build().StartAsync();

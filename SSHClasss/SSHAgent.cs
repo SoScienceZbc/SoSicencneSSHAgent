@@ -66,7 +66,7 @@ namespace SoSicencneSSHAgent.SSHClasss
         }
         public void CreateSshTunnel()
         {
-            sendCommand("ssh -N -T -R 33700:localhost:33700 SoScienceUser@40.87.150.18");
+            //sendCommand("ssh -N -T -R 5000:localhost:33700 40.87.150.18");
             //sendCommand("ssh -R 33700:localhost:33700 SoScienceUser@40.87.150.18");
 
             //sendCommand("ssh -T -p 33700 SoScienceUser@localhost");
@@ -167,7 +167,7 @@ namespace SoSicencneSSHAgent.SSHClasss
 
                     client.Connect();
                 }
-                ForwardedPortRemote portRemote = new ForwardedPortRemote(System.Net.IPAddress.Parse("127.0.0.1"), 33700, System.Net.IPAddress.Loopback, 33700);
+                ForwardedPortRemote portRemote = new ForwardedPortRemote(System.Net.IPAddress.Parse("127.0.0.1"), 33700, System.Net.IPAddress.Loopback, 33701);
                 //ForwardedPortRemote portRemote = new ForwardedPortRemote(5002,"127.0.0.1",33700);
                 //ForwardedPortLocal port = new ForwardedPortLocal(33700, client.ConnectionInfo.Host, 33700);
                 portRemote.RequestReceived += new EventHandler<PortForwardEventArgs>(port_Request);
