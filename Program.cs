@@ -15,7 +15,7 @@ namespace SoSicencneSSHAgent
             Thread th = new Thread(agent.CreateSshTunnel);
             th.Start();
             CreateHostBuilder(args).Build().StartAsync();
-            Console.WriteLine("Wait A thread has started as a background services.");
+            Console.WriteLine("The BackGroundservice have been started, press enter to stop this program.");
             Console.ReadLine();
 
 

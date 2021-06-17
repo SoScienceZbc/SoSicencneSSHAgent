@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace SoSicencneSSHAgent.SSHClasss
 {
+    /// <summary>
+    /// This has the responsblity to start a ssh stream.
+    /// </summary>
     public class SSHAgent : IDisposable
     {
         #region Fields
@@ -26,7 +29,7 @@ namespace SoSicencneSSHAgent.SSHClasss
         #endregion
 
         string sshServer = "40.87.150.18";
-        int port = 22;
+        int port = 2222;
         string username = "SoScienceUser";
         #endregion
         #region Construtor
@@ -140,6 +143,9 @@ namespace SoSicencneSSHAgent.SSHClasss
         #endregion
     }
 
+    /// <summary>
+    /// This has the responblity to start and handle the ssh tunnel.
+    /// </summary>
     class SshTunnel
     {
         #region Fields
@@ -167,37 +173,25 @@ namespace SoSicencneSSHAgent.SSHClasss
 
                     client.Connect();
                 }
-                ForwardedPortRemote portRemote = new ForwardedPortRemote(System.Net.IPAddress.Parse("127.0.0.1"), 33700, System.Net.IPAddress.Loopback, 33701);
-                //ForwardedPortRemote portRemote = new ForwardedPortRemote(5002,"127.0.0.1",33700);
-                //ForwardedPortLocal port = new ForwardedPortLocal(33700, client.ConnectionInfo.Host, 33700);
+                ForwardedPortRemote portRemote = new ForwardedPortRemote(System.Net.IPAddress.Parse("127.0.0.1"), 33700, System.Net.IPAddress.Loopback, 33700);
                 portRemote.RequestReceived += new EventHandler<PortForwardEventArgs>(port_Request);
-                //port.RequestReceived += new EventHandler<PortForwardEventArgs>(portL_Request);
                 portRemote.Exception += new EventHandler<ExceptionEventArgs>(Port_Ex);
-                //client.AddForwardedPort(port);
                 client.KeepAliveInterval = TimeSpan.FromSeconds(10);
                 client.AddForwardedPort(portRemote);
                 foreach (var item in client.ForwardedPorts)
-                {
                     item.Start();
-                }
+
 
                 if (portRemote.IsStarted && client.IsConnected)
                 {
-
-
                     Console.WriteLine("BoundHost: " + portRemote.BoundHost);
                     Console.WriteLine("BoundPort:" + portRemote.BoundPort);
                     Console.WriteLine($"Clinet Infomation : {client.ConnectionInfo.Username}\n" +
                         $"Host : {client.ConnectionInfo.Host}\nProxyHost: {client.ConnectionInfo.ProxyHost} The tunnel have been createde..");
-                    //while (client.IsConnected)
-                    //{
-                    //    Thread.Sleep(30000);
-                    //    client.SendKeepAlive();
-                    //}
                 }
                 else
                 {
-                    Console.WriteLine("nop");
+                    Console.WriteLine("The Client could not connect.. see SSHAgent.csv line 167.");
                 }
             }
             catch
@@ -205,7 +199,7 @@ namespace SoSicencneSSHAgent.SSHClasss
                 client.Disconnect();
                 client.Dispose();
                 Dispose();
-                throw;
+                //throw;
             }
         }
         public void Dispose()
@@ -214,8 +208,12 @@ namespace SoSicencneSSHAgent.SSHClasss
                 client.Dispose();
         }
         #endregion
-
         #region Events
+        /// <summary>
+        /// This event fires evey time there is a incomming packets on the remote port.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="s"></param>
         public void port_Request(object sender, PortForwardEventArgs s)
         {
             ForwardedPortRemote senders = (ForwardedPortRemote)sender;
@@ -223,61 +221,15 @@ namespace SoSicencneSSHAgent.SSHClasss
             Console.WriteLine($"PortRemote: {s.OriginatorHost} :{s.OriginatorPort}\ncallerHost: {senders.Host}" +
                 $"\nCallerBoundPort: {senders.BoundPort}\nForwardRemotePortStarteted: {senders.IsStarted}");
         }
-        public void portL_Request(object sender, PortForwardEventArgs s)
-        {
-
-            ForwardedPortLocal senders = (ForwardedPortLocal)sender;
-            Console.WriteLine($"PortRemote: {s.OriginatorHost} :{s.OriginatorPort}\ncallerHost: {senders.Host}" +
-                $"\nCallerBoundPort: {senders.BoundPort}\nForwardRemotePortStarteted: {senders.IsStarted}");
-        }
+        /// <summary>
+        /// This event fires evey time there is a exception on the remote port.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="s"></param>
         public void Port_Ex(object sender, ExceptionEventArgs s)
         {
             Console.WriteLine("Exaction" + s.Exception.Message);
         }
         #endregion
     }
-
-    #region sshmysqlagent_Testing
-    public class sshMysqlAgent
-    {
-        public static (SshClient SshClient, uint Port) ConnectSsh(string sshHostName, string sshUserName, string sshPassword = null,
-            string sshKeyFile = null, string sshPassPhrase = null, int sshPort = 22, string databaseServer = "localhost", int databasePort = 3306)
-        {
-            #region check arguments
-            // check arguments
-            if (string.IsNullOrEmpty(sshHostName))
-                throw new ArgumentException($"{nameof(sshHostName)} must be specified.", nameof(sshHostName));
-            if (string.IsNullOrEmpty(sshHostName))
-                throw new ArgumentException($"{nameof(sshUserName)} must be specified.", nameof(sshUserName));
-            if (string.IsNullOrEmpty(sshPassword) && string.IsNullOrEmpty(sshKeyFile))
-                throw new ArgumentException($"One of {nameof(sshPassword)} and {nameof(sshKeyFile)} must be specified.");
-            if (string.IsNullOrEmpty(databaseServer))
-                throw new ArgumentException($"{nameof(databaseServer)} must be specified.", nameof(databaseServer));
-            // define the authentication methods to use (in order)
-            var authenticationMethods = new List<AuthenticationMethod>();
-            if (!string.IsNullOrEmpty(sshKeyFile))
-            {
-                authenticationMethods.Add(new PrivateKeyAuthenticationMethod(sshUserName,
-                    new PrivateKeyFile(sshKeyFile, string.IsNullOrEmpty(sshPassPhrase) ? null : sshPassPhrase)));
-            }
-            if (!string.IsNullOrEmpty(sshPassword))
-            {
-                authenticationMethods.Add(new PasswordAuthenticationMethod(sshUserName, sshPassword));
-            }
-            #endregion
-
-            // connect to the SSH server
-            var sshClient = new SshClient(new ConnectionInfo(sshHostName, sshPort, sshUserName, authenticationMethods.ToArray()));
-            sshClient.Connect();
-
-            // forward a local port to the database server and port, using the SSH server
-            var forwardedPort = new ForwardedPortLocal("127.0.0.1", databaseServer, (uint)databasePort);
-            sshClient.AddForwardedPort(forwardedPort);
-            forwardedPort.Start();
-
-            return (sshClient, forwardedPort.BoundPort);
-        }
-
-    }
-    #endregion
 }

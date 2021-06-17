@@ -18,34 +18,25 @@ namespace SoSicencneSSHAgent.MicroServices
     {
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-
+            //TODO: Implement a ssl here and uncomment appcontext.setswitch.
+            //TODO: Implement SSL certificat on port 33701 via kj.UserHttps(ssl_certPath,Name);
             //AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
             //AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2Support", true);
-
             await Host.CreateDefaultBuilder().ConfigureWebHostDefaults(o =>
             {
-                
-                //o.UseKestrel()
-                o.UseKestrel().UseStartup<GrpcAgentStartUp>().ConfigureKestrel(k => 
-                { 
-                    k.Listen(System.Net.IPAddress.Loopback, 33700, kj => {
-                        kj.Protocols = HttpProtocols.Http1;                        
+                o.UseKestrel().UseStartup<GrpcAgentStartUp>().ConfigureKestrel(k =>
+                {
+                    k.Listen(System.Net.IPAddress.Any, 33700, kj =>
+                    {
+                        kj.Protocols = HttpProtocols.Http1;
                     });
-                    k.Listen(System.Net.IPAddress.Any,33701,kj => {
-                        kj.Protocols = HttpProtocols.Http2;                        
+                    k.Listen(System.Net.IPAddress.Any, 33701, kj =>
+                    {
+                        kj.Protocols = HttpProtocols.Http2;
+                        //kj.UseHttps();
                     });
                 });
             }).Build().StartAsync(stoppingToken);
-            
-            //using (SSHAgent agent = new SSHAgent())
-            //{
-            //    Thread th = new Thread(agent.StartSshtunnel);
-            //    th.Start();
-            //    //agent.StartSshtunnel();
-            //};
-            //agent.CreateSshTunnel();
-            //th.Start();
-            //ThreadPool.QueueUserWorkItem(new TcpHandler().StartThread);
         }
     }
 }

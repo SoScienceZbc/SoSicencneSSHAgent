@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 using System.Threading;
 using SoSicencneSSHAgent.MicroServices;
+using GrpcServiceForAngular.Services.DataBase;
 
 namespace SoSicencneSSHAgent
 {
@@ -20,16 +21,16 @@ namespace SoSicencneSSHAgent
         {
 
             services.AddGrpc();            
-            services.AddCors(o =>
-            {
-                o.AddPolicy("MyPolicy", builder =>
-                {
-                    builder.AllowAnyOrigin();
-                    builder.AllowAnyMethod();
-                    builder.AllowAnyHeader();
-                    builder.WithExposedHeaders("Grpc-Status", "Grpc-Message");
-                });
-            });
+            //services.AddCors(o =>
+            //{
+            //    o.AddPolicy("MyPolicy", builder =>
+            //    {
+            //        builder.AllowAnyOrigin();
+            //        builder.AllowAnyMethod();
+            //        builder.AllowAnyHeader();
+            //        builder.WithExposedHeaders("Grpc-Status", "Grpc-Message");
+            //    });
+            //});
             
         }
 
@@ -41,14 +42,14 @@ namespace SoSicencneSSHAgent
             }
 
             app.UseRouting();
-            app.UseCors("MyPolicy");
+            //app.UseCors("MyPolicy");
             app.UseGrpcWeb();
 
             app.UseEndpoints(endpoints =>
             {
 
+                endpoints.MapGrpcService<DataBaseService>().EnableGrpcWeb();
                 endpoints.MapGrpcService<LoginServiceMicroserivces>().EnableGrpcWeb();
-                endpoints.MapGrpcService<DatabaseMicroserivces>().EnableGrpcWeb();
 
             });            
         }

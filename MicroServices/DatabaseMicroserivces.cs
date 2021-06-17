@@ -1,89 +1,105 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using DatabaseService_Grpc;
 using Grpc.Core;
+using Grpc.Net.Client;
+using Grpc.Net.Client.Web;
 
 namespace SoSicencneSSHAgent.MicroServices
 {
     /// <summary>
     /// This is the thing that calls locahost for data from the sql database
     /// </summary>
-    public class DatabaseMicroserivces : GrpcDatabaseProject.GrpcDatabaseProjectClient
+    public class DatabaseMicroserivces
     {
+        static GrpcDatabaseProject.GrpcDatabaseProjectClient channel;
+        static GrpcWebHandler handler = new GrpcWebHandler(GrpcWebMode.GrpcWebText, new HttpClientHandler());
+        public DatabaseMicroserivces()
+        {
+            if (channel == null)
+                channel = new GrpcDatabaseProject.GrpcDatabaseProjectClient(GrpcChannel.ForAddress("http://localhost:48041", new GrpcChannelOptions { 
+                    HttpClient = new HttpClient(handler), 
+                    Credentials = ChannelCredentials.Insecure }));
+
+        }
+
         #region Project
-        public  Task<D_Project> GetProject(UserDbInfomation infomation, ServerCallContext context)
+        public Task<D_Project> GetProject(UserDbInfomation infomation)
         {
-            Console.WriteLine($"Host:{context.Host} called Method:{context.Method}");
-            return null;
+            Console.WriteLine("Returning GetProject");
+            return Task.FromResult(channel.GetProject(infomation));
         }
-        public  Task<intger> AddProject(ProjectUserInfomation infomation, ServerCallContext context)
+        public Task<intger> AddProject(ProjectUserInfomation infomation)
         {
-            Console.WriteLine($"Host:{context.Host} called Method:{context.Method}");
-            return null;
-        }
-        public  Task<intger> EditProject(ProjectUserInfomation infomation, ServerCallContext context)
-        {
-
-            return null;
+            Console.WriteLine("Returning AddProject");
+            return Task.FromResult(channel.AddProject(infomation));
         }
 
-        public  Task<intger> RemoveProject(ProjectUserInfomation infomation, ServerCallContext context)
+        public Task<intger> EditProject(ProjectUserInfomation infomation)
         {
-            return null;
+            Console.WriteLine("Returning EditProject");
+            return Task.FromResult(channel.EditProject(infomation));
         }
 
-        public  Task<D_Projects> GetProjects(UserDbInfomation infomation, ServerCallContext context)
+        public Task<intger> RemoveProject(ProjectUserInfomation infomation)
         {
-            return null;
+            return Task.FromResult(channel.RemoveProject(infomation));
+        }
+
+        public Task<D_Projects> GetProjects(UserDbInfomation infomation)
+        {
+            Console.WriteLine("Returning GetProjects");
+            return Task.FromResult(channel.GetProjects(infomation));
         }
 
         #endregion
         #region Docoment
-        public  Task<D_Documents> GetDocuments(UserDbInfomation infomation, ServerCallContext context)
+        public Task<D_Documents> GetDocuments(UserDbInfomation infomation)
         {
-            return null;
+            return Task.FromResult(channel.GetDocuments(infomation));
         }
         // documents
-        public  Task<intger> AddDocument(D_Document infomation, ServerCallContext context)
+        public Task<intger> AddDocument(D_Document infomation)
         {
-            return null;
+            return Task.FromResult(channel.AddDocument(infomation));
         }
-        public  Task<D_Document> GetDocument(UserDbInfomation infomation, ServerCallContext context)
+        public Task<D_Document> GetDocument(UserDbInfomation infomation)
         {
-            return null;
+            return Task.FromResult(channel.GetDocument(infomation));
         }
-        public  Task<intger> UpdateDocument(D_Document infomation, ServerCallContext context)
+        public Task<intger> UpdateDocument(D_Document infomation)
         {
-            return null;
+            return Task.FromResult(channel.UpdateDocument(infomation));
         }
 
-        public Task<intger> RemoveDocument(UserDbInfomation infomation,ServerCallContext context)
+        public Task<intger> RemoveDocument(ProjectUserInfomation infomation)
         {
-            return null;
+            return Task.FromResult(channel.RemoveDocument(infomation));
         }
         #endregion
         #region Remote
-        public  Task<intger> AddRemoteFile(D_RemoteFile infomation, ServerCallContext context)
+        public Task<intger> AddRemoteFile(D_RemoteFile infomation)
         {
-            return null;
+            return Task.FromResult(channel.AddRemoteFile(infomation));
         }
-        public  Task<D_RemoteFile> GetRemoteFile(UserDbInfomation infomation, ServerCallContext context)
+        public Task<D_RemoteFile> GetRemoteFile(UserDbInfomation infomation)
         {
-            return null;
+            return Task.FromResult(channel.GetRemoteFile(infomation));
         }
-        public  Task<D_RemoteFile> UpdateRemoteFile(D_RemoteFile infomation, ServerCallContext context)
+        public Task<D_RemoteFile> UpdateRemoteFile(D_RemoteFile infomation)
         {
-            return null;
+            return Task.FromResult(channel.UpdateRemoteFile(infomation));
         }
-        public  Task<intger> RemoveRemoteFile(UserDbInfomation infomation, ServerCallContext context)
+        public Task<intger> RemoveRemoteFile(UserDbInfomation infomation)
         {
-            return null;
+            return Task.FromResult(channel.RemoveRemoteFile(infomation));
         }
-        public  Task<D_RemoteFiles> GetRemoteFiles(UserDbInfomation infomation, ServerCallContext context)
+        public Task<D_RemoteFiles> GetRemoteFiles(UserDbInfomation infomation)
         {
-            return null;
+            return Task.FromResult(channel.GetRemoteFiles(infomation));
         }
         #endregion
     }
