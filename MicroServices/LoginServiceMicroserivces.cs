@@ -48,7 +48,7 @@ namespace SoSicencneSSHAgent.MicroServices
                 valid = false;
             }
             finally
-            {
+            {                
                 connection.Dispose();
             }
 

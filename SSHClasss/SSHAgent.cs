@@ -3,6 +3,7 @@ using Renci.SshNet.Common;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,6 +32,11 @@ namespace SoSicencneSSHAgent.SSHClasss
         string sshServer = "40.87.150.18";
         int port = 2222;
         string username = "SoScienceUser";
+
+        public SshClient ClientS { get => clientS; private set => clientS = value; }
+        public SshCommand Sc { get => sc; private set => sc = value; }
+        public ShellStream Stream { get => stream; private set => stream = value; }
+        public ConnectionInfo ConnectionInfo { get => connectionInfo; private set => connectionInfo = value; }
         #endregion
         #region Construtor
         public SSHAgent()
@@ -194,12 +200,25 @@ namespace SoSicencneSSHAgent.SSHClasss
                     Console.WriteLine("The Client could not connect.. see SSHAgent.csv line 167.");
                 }
             }
-            catch
+            catch (SshConnectionException e)
+            {
+                Console.WriteLine($"Cannot connect to the server: {e.Message }");
+            }
+            catch (SocketException s)
+            {
+                Console.WriteLine($"Unable to establish the socket.{s.Message}");
+            }
+            catch (SshAuthenticationException auth)
+            {
+                Console.WriteLine($"Authentication of SSH session failed: {auth}");
+
+            }
+            catch(Exception e)
             {
                 client.Disconnect();
                 client.Dispose();
                 Dispose();
-                //throw;
+                Console.WriteLine($"SSHAgent ran into a problem, contact the dev with the includede messagse: {e.Message}");
             }
         }
         public void Dispose()
