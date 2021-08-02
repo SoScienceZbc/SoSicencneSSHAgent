@@ -22,12 +22,6 @@ namespace SoSicencneSSHAgent.SSHClasss
         ShellStream stream;
         ConnectionInfo connectionInfo;
 
-        #region TestSSH Parms
-        /*This is for testing ssh towards a test serve.*/
-        //string sshServer = "192.168.1.102";
-        // string username = "root";
-        //string password = "skpit4200!"; // SSh use RSA keyauth so password is not used.
-        #endregion
 
         string sshServer = "40.87.150.18";
         int port = 2222;
