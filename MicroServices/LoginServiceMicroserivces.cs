@@ -1,12 +1,14 @@
 ﻿using Grpc.Core;
+using Grpc.Net.Client;
+using Grpc.Net.Client.Web;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Hosting;
-using Proto;
 using System;
 using System.Collections.Generic;
 using System.DirectoryServices.Protocols;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,45 +16,24 @@ using System.Threading.Tasks;
 
 namespace SoSicencneSSHAgent.MicroServices
 {
-    public class LoginServiceMicroserivces : LoginServcie.LoginServcieBase
+    public class LoginServiceMicroserivces
     {
-
-        public override Task<LoginRepley> LoginAD(LoginRequset requset,ServerCallContext context )
+        static LoginService_Grpc.LoginService.LoginServiceClient channel;
+        static GrpcWebHandler handler = new GrpcWebHandler(GrpcWebMode.GrpcWebText, new HttpClientHandler());
+        public LoginServiceMicroserivces()
         {
-            return Task.FromResult(new LoginRepley { LoginSucsefull = ADLookup(requset.Username, requset.Password) });
+            if (channel == null)
+                channel = new LoginService_Grpc.LoginService.LoginServiceClient(GrpcChannel.ForAddress("http://localhost:48053", new GrpcChannelOptions
+                {
+                    HttpClient = new HttpClient(handler),
+                    Credentials = ChannelCredentials.Insecure
+                }));
+
         }
-        //looks if user can login in AD
-        public bool ADLookup(string username, string password)
+
+        public Task<LoginService_Grpc.LoginRepley> LoginAD(LoginService_Grpc.LoginRequset requset, ServerCallContext context )
         {
-            bool valid;
-            //  LdapDirectoryIdentifier identifier = new LdapDirectoryIdentifier("dc01.efif.dk", 389);
-            LdapDirectoryIdentifier identifier = new LdapDirectoryIdentifier("10.255.1.1", 389);
-
-            LdapConnection connection = new LdapConnection(identifier)
-            {
-                Credential = new NetworkCredential(username, password)
-            };
-            try
-            {
-                connection.Bind();
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"{username} have been login...");
-                Console.ForegroundColor = ConsoleColor.White;
-                valid = true;
-            }
-            catch
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"{username} cant login...");
-                Console.ForegroundColor = ConsoleColor.White;
-                valid = false;
-            }
-            finally
-            {                
-                connection.Dispose();
-            }
-
-            return valid;
+            return Task.FromResult(channel.LoginAD(requset));
         }
        
     }
