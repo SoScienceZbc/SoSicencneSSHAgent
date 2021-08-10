@@ -7,6 +7,6 @@ namespace SoSicencneSSHAgent.jwt
     enum RoleType
     {
         user,
-        theacher
+        teacher
     }
 }
