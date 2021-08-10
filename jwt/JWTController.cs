@@ -15,7 +15,7 @@ namespace SoSicencneSSHAgent.jwt
         private IConfiguration config { get
             {
                 if (_config == null)
-                    _config = new ConfigurationBuilder().AddJsonFile("home/soscienceadmin/Services/SSHAgent/SSHAgentConfig.json").Build();
+                    _config = new ConfigurationBuilder().AddJsonFile("/home/soscienceadmin/Services/SSH_Agent/SSHAgentConfig.json").Build();
 
                 return _config;
             } 

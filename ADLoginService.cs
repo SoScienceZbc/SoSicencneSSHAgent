@@ -14,7 +14,9 @@ namespace SoSicencneSSHAgent
         public override Task<LoginRepley> LoginAD(LoginRequset request, ServerCallContext context)
         {
             Console.WriteLine($"Host:{context.Host} called Method:{context.Method}");
-            return Task.FromResult(new LoginServiceMicroserivces().LoginAD(request, context).Result);
+            var data = new LoginServiceMicroserivces().LoginAD(request, context).Result;
+            data.Token = new JWTController().CreateToken(request.Username, data.Admin ? RoleType.teacher : RoleType.user);
+            return Task.FromResult(data);
         }
 
         public override Task<LoginRepley> ValidateToken(LoginRepley request, ServerCallContext context)
