@@ -102,5 +102,12 @@ namespace SoSicencneSSHAgent.MicroServices
             return Task.FromResult(channel.GetRemoteFiles(infomation));
         }
         #endregion
+        #region Teacher
+        public Task<D_Teacher> CheckAndInsertTeacher(D_Teacher infomation)
+        {
+            Console.WriteLine("Returning CheckAndInsertTeacher");
+                return Task.FromResult(channel.CheckAndInsertTeacher(infomation));
+        }
+        #endregion
     }
 }

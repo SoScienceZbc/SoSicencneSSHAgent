@@ -1,4 +1,5 @@
-﻿using Grpc.Core;
+﻿using DatabaseService_Grpc;
+using Grpc.Core;
 using LoginService_Grpc;
 using SoSicencneSSHAgent.jwt;
 using SoSicencneSSHAgent.MicroServices;
@@ -16,6 +17,10 @@ namespace SoSicencneSSHAgent
             Console.WriteLine($"Host:{context.Host} called Method:{context.Method}");
             var data = new LoginServiceMicroserivces().LoginAD(request, context).Result;
             data.Token = new JWTController().CreateToken(request.Username, data.Admin ? RoleType.teacher : RoleType.user);
+            if (data.Admin)
+            {
+                new DatabaseMicroserivces().CheckAndInsertTeacher(new D_Teacher() { Username = request.Username });
+            }
             return Task.FromResult(data);
         }
 
