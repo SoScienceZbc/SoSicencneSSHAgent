@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using DatabaseService_Grpc;
 using SoSicencneSSHAgent.MicroServices;
 using Grpc.Core;
+using SoSicencneSSHAgent.jwt;
 
 namespace GrpcServiceForAngular.Services.DataBase
 {
@@ -18,37 +19,49 @@ namespace GrpcServiceForAngular.Services.DataBase
         #region Project
         public override Task<D_Project> GetProject(UserDbInfomation infomation, ServerCallContext context)
         {
-            Console.WriteLine($"Host:{context.Host} called Method:{context.Method}");
-            return Task.FromResult(new DatabaseMicroserivces().GetProject(infomation).Result);
+            infomation.DbName = new JWTController().GetUsername(infomation.DbName);
+            if (infomation.DbName != "")
+                return Task.FromResult(new DatabaseMicroserivces().GetProject(infomation).Result);
+            return Task.FromResult(new D_Project());
         }
         public override Task<intger> AddProject(ProjectUserInfomation infomation, ServerCallContext context)
         {
-            Console.WriteLine($"Host:{context.Host} called Method:{context.Method}");
-            return Task.FromResult(new DatabaseMicroserivces().AddProject(infomation).Result);
+            infomation.User.DbName = new JWTController().GetUsername(infomation.User.DbName);
+            if (infomation.User.DbName != "")
+                return Task.FromResult(new DatabaseMicroserivces().AddProject(infomation).Result);
+            return Task.FromResult(new intger() { Number = 0 });
         }
         public override Task<intger> EditProject(ProjectUserInfomation infomation, ServerCallContext context)
         {
-
-            return Task.FromResult(new DatabaseMicroserivces().EditProject(infomation).Result);
+            infomation.User.DbName = new JWTController().GetUsername(infomation.User.DbName);
+            if (infomation.User.DbName != "")
+                return Task.FromResult(new DatabaseMicroserivces().EditProject(infomation).Result);
+            return Task.FromResult(new intger() { Number = 0 });
         }
-
         public override Task<intger> RemoveProject(ProjectUserInfomation infomation, ServerCallContext context)
         {
-            return Task.FromResult(new DatabaseMicroserivces().RemoveProject(infomation).Result);
+            infomation.User.DbName = new JWTController().GetUsername(infomation.User.DbName);
+            if (infomation.User.DbName != "")
+                return Task.FromResult(new DatabaseMicroserivces().RemoveProject(infomation).Result);
+            return Task.FromResult(new intger() { Number = 0 });
         }
-
         public override Task<D_Projects> GetProjects(UserDbInfomation infomation, ServerCallContext context)
         {
-            return Task.FromResult(new DatabaseMicroserivces().GetProjects(infomation).Result);
+            infomation.DbName = new JWTController().GetUsername(infomation.DbName);
+            if (infomation.DbName != "")
+                return Task.FromResult(new DatabaseMicroserivces().GetProjects(infomation).Result);
+            return Task.FromResult(new D_Projects());
         }
 
         #endregion
         #region Docoment
         public override Task<D_Documents> GetDocuments(UserDbInfomation infomation, ServerCallContext context)
         {
-            return Task.FromResult(new DatabaseMicroserivces().GetDocuments(infomation).Result);
+            infomation.DbName = new JWTController().GetUsername(infomation.DbName);
+            if (infomation.DbName != "")
+                return Task.FromResult(new DatabaseMicroserivces().GetDocuments(infomation).Result);
+            return Task.FromResult(new D_Documents());
         }
-        // documents
         public override Task<intger> AddDocument(D_Document infomation, ServerCallContext context)
         {
             return Task.FromResult(new DatabaseMicroserivces().AddDocument(infomation).Result);
@@ -61,10 +74,12 @@ namespace GrpcServiceForAngular.Services.DataBase
         {
             return Task.FromResult(new DatabaseMicroserivces().UpdateDocument(infomation).Result);
         }
-
-        public override Task<intger> RemoveDocument(ProjectUserInfomation infomation,ServerCallContext context)
+        public override Task<intger> RemoveDocument(ProjectUserInfomation infomation, ServerCallContext context)
         {
-            return Task.FromResult(new DatabaseMicroserivces().RemoveDocument(infomation).Result);
+            infomation.User.DbName = new JWTController().GetUsername(infomation.User.DbName);
+            if (infomation.User.DbName != "")
+                return Task.FromResult(new DatabaseMicroserivces().RemoveDocument(infomation).Result);
+            return Task.FromResult(new intger() { Number = 0 });
         }
         #endregion
         #region Remote
@@ -74,7 +89,10 @@ namespace GrpcServiceForAngular.Services.DataBase
         }
         public override Task<D_RemoteFile> GetRemoteFile(UserDbInfomation infomation, ServerCallContext context)
         {
-            return Task.FromResult(new DatabaseMicroserivces().GetRemoteFile(infomation).Result);
+            if (infomation.DbName != "")
+                return Task.FromResult(new DatabaseMicroserivces().GetRemoteFile(infomation).Result);
+            infomation.DbName = new JWTController().GetUsername(infomation.DbName);
+            return Task.FromResult(new D_RemoteFile());
         }
         public override Task<D_RemoteFile> UpdateRemoteFile(D_RemoteFile infomation, ServerCallContext context)
         {
@@ -82,11 +100,17 @@ namespace GrpcServiceForAngular.Services.DataBase
         }
         public override Task<intger> RemoveRemoteFile(UserDbInfomation infomation, ServerCallContext context)
         {
-            return Task.FromResult(new DatabaseMicroserivces().RemoveRemoteFile(infomation).Result);
+            if (infomation.DbName != "")
+                return Task.FromResult(new DatabaseMicroserivces().RemoveRemoteFile(infomation).Result);
+            infomation.DbName = new JWTController().GetUsername(infomation.DbName);
+            return Task.FromResult(new intger() { Number = 0 });
         }
         public override Task<D_RemoteFiles> GetRemoteFiles(UserDbInfomation infomation, ServerCallContext context)
         {
-            return Task.FromResult(new DatabaseMicroserivces().GetRemoteFiles(infomation).Result);
+            infomation.DbName = new JWTController().GetUsername(infomation.DbName);
+            if (infomation.DbName != "")
+                return Task.FromResult(new DatabaseMicroserivces().GetRemoteFiles(infomation).Result);
+            return Task.FromResult(new D_RemoteFiles());
         }
         #endregion
 
