@@ -113,6 +113,15 @@ namespace GrpcServiceForAngular.Services.DataBase
             return Task.FromResult(new D_RemoteFiles());
         }
         #endregion
-
+        #region Subject
+        public override Task<intger> AddSubject(D_Subject request, ServerCallContext context)
+        {
+            if (new JWTController().ValidateRoleLevel(request.User.DbName,RoleType.teacher))
+            {
+                return Task.FromResult(new DatabaseMicroserivces().AddSubject(request).Result);
+            }
+            return Task.FromResult(new intger() { Number = 0 });
+        }
+        #endregion
     }
 }

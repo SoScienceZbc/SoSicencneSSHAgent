@@ -109,5 +109,11 @@ namespace SoSicencneSSHAgent.MicroServices
                 return Task.FromResult(channel.CheckAndInsertTeacher(infomation));
         }
         #endregion
+        #region Subject
+        public Task<intger> AddSubject(D_Subject subject)
+        {
+            return Task.FromResult(channel.AddSubject(subject));
+        }
+        #endregion
     }
 }
