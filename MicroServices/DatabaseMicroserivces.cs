@@ -120,5 +120,19 @@ namespace SoSicencneSSHAgent.MicroServices
             return Task.FromResult(channel.GetSubjects(infomation));
         }
         #endregion
+        #region Project Theme
+        public Task<intger> AddProjectTheme(D_ProjectTheme theme)
+        {
+            return Task.FromResult(channel.AddProjectTheme(theme));
+        }
+        public Task<D_ProjectThemes> GetProjectThemes(UserDbInfomation infomation)
+        {
+            return Task.FromResult(channel.GetProjectThemes(infomation));
+        }
+        public Task<D_ProjectThemes> GetProjectThemesFromSubject(ThemeFromSubject infomation)
+        {
+            return Task.FromResult(channel.GetProjectThemesFromSubject(infomation));
+        }
+        #endregion
     }
 }

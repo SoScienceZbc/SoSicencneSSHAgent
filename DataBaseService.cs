@@ -89,9 +89,9 @@ namespace GrpcServiceForAngular.Services.DataBase
         }
         public override Task<D_RemoteFile> GetRemoteFile(UserDbInfomation infomation, ServerCallContext context)
         {
+            infomation.DbName = new JWTController().GetUsername(infomation.DbName);
             if (infomation.DbName != "")
                 return Task.FromResult(new DatabaseMicroserivces().GetRemoteFile(infomation).Result);
-            infomation.DbName = new JWTController().GetUsername(infomation.DbName);
             return Task.FromResult(new D_RemoteFile());
         }
         public override Task<D_RemoteFile> UpdateRemoteFile(D_RemoteFile infomation, ServerCallContext context)
@@ -100,9 +100,9 @@ namespace GrpcServiceForAngular.Services.DataBase
         }
         public override Task<intger> RemoveRemoteFile(UserDbInfomation infomation, ServerCallContext context)
         {
+            infomation.DbName = new JWTController().GetUsername(infomation.DbName);
             if (infomation.DbName != "")
                 return Task.FromResult(new DatabaseMicroserivces().RemoveRemoteFile(infomation).Result);
-            infomation.DbName = new JWTController().GetUsername(infomation.DbName);
             return Task.FromResult(new intger() { Number = 0 });
         }
         public override Task<D_RemoteFiles> GetRemoteFiles(UserDbInfomation infomation, ServerCallContext context)
@@ -130,6 +130,34 @@ namespace GrpcServiceForAngular.Services.DataBase
                 return Task.FromResult(new DatabaseMicroserivces().GetSubjects(request).Result);
             }
             return Task.FromResult(new D_Subjects());
+        }
+        #endregion.
+        #region project Theme
+        public override Task<intger> AddProjectTheme(D_ProjectTheme request, ServerCallContext context)
+        {
+            if (new JWTController().ValidateRoleLevel(request.Teacher, RoleType.teacher))
+            {
+                request.Teacher = new JWTController().GetUsername(request.Teacher);
+                return Task.FromResult(new DatabaseMicroserivces().AddProjectTheme(request).Result);
+            }
+            return Task.FromResult(new intger() { Number = 0 });
+        }
+        public override Task<D_ProjectThemes> GetProjectThemes(UserDbInfomation request, ServerCallContext context)
+        {
+            if (!string.IsNullOrEmpty(new JWTController().GetUsername(request.DbName)))
+            {
+                return Task.FromResult(new DatabaseMicroserivces().GetProjectThemes(request).Result);
+            }
+
+            return base.GetProjectThemes(request, context);
+        }
+        public override Task<D_ProjectThemes> GetProjectThemesFromSubject(ThemeFromSubject request, ServerCallContext context)
+        {
+            if (!string.IsNullOrEmpty(new JWTController().GetUsername(request.User.DbName)))
+            {
+                return Task.FromResult(new DatabaseMicroserivces().GetProjectThemesFromSubject(request).Result);
+            }
+            return base.GetProjectThemesFromSubject(request, context);
         }
         #endregion
     }
