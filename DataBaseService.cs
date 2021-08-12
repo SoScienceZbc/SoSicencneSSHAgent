@@ -122,6 +122,15 @@ namespace GrpcServiceForAngular.Services.DataBase
             }
             return Task.FromResult(new intger() { Number = 0 });
         }
+
+        public override Task<D_Subjects> GetSubjects(UserDbInfomation request, ServerCallContext context)
+        {
+            if (new JWTController().ValidateRoleLevel(request.DbName, RoleType.teacher))
+            {
+                return Task.FromResult(new DatabaseMicroserivces().GetSubjects(request).Result);
+            }
+            return Task.FromResult(new D_Subjects());
+        }
         #endregion
     }
 }

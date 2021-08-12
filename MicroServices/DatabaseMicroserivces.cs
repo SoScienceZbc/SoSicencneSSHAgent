@@ -114,6 +114,11 @@ namespace SoSicencneSSHAgent.MicroServices
         {
             return Task.FromResult(channel.AddSubject(subject));
         }
+
+        public Task<D_Subjects> GetSubjects(UserDbInfomation infomation)
+        {
+            return Task.FromResult(channel.GetSubjects(infomation));
+        }
         #endregion
     }
 }
