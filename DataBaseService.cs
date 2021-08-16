@@ -123,11 +123,19 @@ namespace GrpcServiceForAngular.Services.DataBase
         }
         public override Task<D_Subjects> GetSubjects(UserDbInfomation request, ServerCallContext context)
         {
-            if (new JWTController().ValidateRoleLevel(request.DbName, RoleType.teacher))
+#if DEBUG
+            D_Subjects subjects = new D_Subjects();
+            subjects.Subject.Add(new D_Subject() { Name = "test1", ID = 1 });
+            subjects.Subject.Add(new D_Subject() { Name = "test2", ID = 2 });
+            subjects.Subject.Add(new D_Subject() { Name = "test3", ID = 3 });
+            return Task.FromResult(subjects);
+#else
+            if (new JWTController().ValidateRoleLevel(request.DbName, RoleType.user))
             {
                 return Task.FromResult(new DatabaseMicroserivces().GetSubjects(request).Result);
             }
             return Task.FromResult(new D_Subjects());
+#endif
         }
         #endregion.
         #region project Theme
@@ -138,25 +146,55 @@ namespace GrpcServiceForAngular.Services.DataBase
                 request.Teacher = new JWTController().GetUsername(request.Teacher);
                 return Task.FromResult(new DatabaseMicroserivces().AddProjectTheme(request).Result);
             }
+            NotValid();
             return Task.FromResult(new intger() { Number = 0 });
         }
         public override Task<D_ProjectThemes> GetProjectThemes(UserDbInfomation request, ServerCallContext context)
         {
-            if (!string.IsNullOrEmpty(new JWTController().GetUsername(request.DbName)))
+            if (new JWTController().ValidateRoleLevel(request.DbName, RoleType.teacher))
             {
+                request.DbName = new JWTController().GetUsername(request.DbName);
                 return Task.FromResult(new DatabaseMicroserivces().GetProjectThemes(request).Result);
             }
-
-            return base.GetProjectThemes(request, context);
+            NotValid();
+            return Task.FromResult(new D_ProjectThemes());
         }
         public override Task<D_ProjectThemes> GetProjectThemesFromSubject(ThemeFromSubject request, ServerCallContext context)
         {
-            if (!string.IsNullOrEmpty(new JWTController().GetUsername(request.User.DbName)))
+            request.User.DbName = new JWTController().GetUsername(request.User.DbName);
+            if (!string.IsNullOrEmpty(request.User.DbName))
             {
                 return Task.FromResult(new DatabaseMicroserivces().GetProjectThemesFromSubject(request).Result);
             }
-            return base.GetProjectThemesFromSubject(request, context);
+            NotValid();
+            return Task.FromResult(new D_ProjectThemes());
+        }
+        public override Task<intger> AddProjectThemeCoTeacher(ProjectThemeUserInfomation request, ServerCallContext context)
+        {
+            if (new JWTController().ValidateRoleLevel(request.User.DbName, RoleType.teacher))
+            {
+                request.User.DbName = new JWTController().GetUsername(request.User.DbName);
+                return Task.FromResult(new DatabaseMicroserivces().AddProjectThemeCoTeacher(request).Result);
+            }
+            NotValid();
+            return Task.FromResult(new intger() { Number = 0 });
+        }
+        public override Task<intger> RemoveProjectTheme(ProjectThemeUserInfomation request, ServerCallContext context)
+        {
+            if (new JWTController().ValidateRoleLevel(request.User.DbName, RoleType.teacher))
+            {
+                request.User.DbName = new JWTController().GetUsername(request.User.DbName);
+                return Task.FromResult(new DatabaseMicroserivces().RemoveProjectTheme(request).Result);
+            }
+            NotValid();
+            return Task.FromResult(new intger() { Number = 0 });
         }
         #endregion
+        private void NotValid()
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("NOT Valid Token");
+            Console.ForegroundColor = ConsoleColor.White;
+        }
     }
 }

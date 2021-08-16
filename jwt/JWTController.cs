@@ -15,7 +15,11 @@ namespace SoSicencneSSHAgent.jwt
         private IConfiguration config { get
             {
                 if (_config == null)
+#if DEBUG
+                    _config = new ConfigurationBuilder().AddJsonFile("./SSHAgentConfig.json").Build();
+#else
                     _config = new ConfigurationBuilder().AddJsonFile("/home/soscienceadmin/Services/SSH_Agent/SSHAgentConfig.json").Build();
+#endif
 
                 return _config;
             } 
@@ -84,11 +88,11 @@ namespace SoSicencneSSHAgent.jwt
             }
         }
 
-        #region Private Method
+#region Private Method
         private string GetSecret()
         {
             return config.GetSection("JWTConfig")["Secret"];
         }
-        #endregion
+#endregion
     }
 }
