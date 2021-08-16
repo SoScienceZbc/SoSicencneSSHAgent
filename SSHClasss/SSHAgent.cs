@@ -128,8 +128,6 @@ namespace SoSicencneSSHAgent.SSHClasss
             return result;
         }
         #endregion
-
-
         #region Methods
         /// <summary>
         /// This the to start the protforwarding.

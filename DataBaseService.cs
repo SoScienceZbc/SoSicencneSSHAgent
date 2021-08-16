@@ -52,7 +52,6 @@ namespace GrpcServiceForAngular.Services.DataBase
                 return Task.FromResult(new DatabaseMicroserivces().GetProjects(infomation).Result);
             return Task.FromResult(new D_Projects());
         }
-
         #endregion
         #region Docoment
         public override Task<D_Documents> GetDocuments(UserDbInfomation infomation, ServerCallContext context)
@@ -122,7 +121,6 @@ namespace GrpcServiceForAngular.Services.DataBase
             }
             return Task.FromResult(new intger() { Number = 0 });
         }
-
         public override Task<D_Subjects> GetSubjects(UserDbInfomation request, ServerCallContext context)
         {
             if (new JWTController().ValidateRoleLevel(request.DbName, RoleType.teacher))

@@ -21,6 +21,7 @@ namespace SoSicencneSSHAgent.MicroServices
     {
         static LoginService.LoginServiceClient channel;
         static GrpcWebHandler handler = new GrpcWebHandler(GrpcWebMode.GrpcWebText, new HttpClientHandler());
+        
         public LoginServiceMicroserivces()
         {
             if (channel == null)

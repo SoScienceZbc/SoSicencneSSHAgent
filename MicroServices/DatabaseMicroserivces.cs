@@ -37,24 +37,20 @@ namespace SoSicencneSSHAgent.MicroServices
             Console.WriteLine("Returning AddProject");
             return Task.FromResult(channel.AddProject(infomation));
         }
-
         public Task<intger> EditProject(ProjectUserInfomation infomation)
         {
             Console.WriteLine("Returning EditProject");
             return Task.FromResult(channel.EditProject(infomation));
         }
-
         public Task<intger> RemoveProject(ProjectUserInfomation infomation)
         {
             return Task.FromResult(channel.RemoveProject(infomation));
         }
-
         public Task<D_Projects> GetProjects(UserDbInfomation infomation)
         {
             Console.WriteLine("Returning GetProjects");
             return Task.FromResult(channel.GetProjects(infomation));
         }
-
         #endregion
         #region Docoment
         public Task<D_Documents> GetDocuments(UserDbInfomation infomation)
@@ -114,7 +110,6 @@ namespace SoSicencneSSHAgent.MicroServices
         {
             return Task.FromResult(channel.AddSubject(subject));
         }
-
         public Task<D_Subjects> GetSubjects(UserDbInfomation infomation)
         {
             return Task.FromResult(channel.GetSubjects(infomation));
