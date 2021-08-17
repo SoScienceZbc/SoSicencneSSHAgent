@@ -123,19 +123,11 @@ namespace GrpcServiceForAngular.Services.DataBase
         }
         public override Task<D_Subjects> GetSubjects(UserDbInfomation request, ServerCallContext context)
         {
-#if DEBUG
-            D_Subjects subjects = new D_Subjects();
-            subjects.Subject.Add(new D_Subject() { Name = "test1", ID = 1 });
-            subjects.Subject.Add(new D_Subject() { Name = "test2", ID = 2 });
-            subjects.Subject.Add(new D_Subject() { Name = "test3", ID = 3 });
-            return Task.FromResult(subjects);
-#else
             if (new JWTController().ValidateRoleLevel(request.DbName, RoleType.user))
             {
                 return Task.FromResult(new DatabaseMicroserivces().GetSubjects(request).Result);
             }
             return Task.FromResult(new D_Subjects());
-#endif
         }
         #endregion.
         #region project Theme

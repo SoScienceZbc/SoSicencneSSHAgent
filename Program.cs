@@ -17,10 +17,12 @@ namespace SoSicencneSSHAgent
     {
         static void Main(string[] args)
         {
-            
+#if DEBUG
+#else
             SSHAgent agent = new SSHAgent();
             Thread th = new Thread(agent.CreateSshTunnel);
             th.Start();
+#endif
             CreateHostBuilder(args).Build().StartAsync();
             Console.WriteLine("The BackGroundservice have been started, press enter to stop this program.");
             Console.ReadLine();
