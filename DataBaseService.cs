@@ -189,6 +189,16 @@ namespace GrpcServiceForAngular.Services.DataBase
             NotValid();
             return Task.FromResult(new intger() { Number = 0 });
         }
+        public override Task<intger> RemoveProjectThemeCoTeacher(ProjectThemeUserInfomation request, ServerCallContext context)
+        {
+            if (new JWTController().ValidateRoleLevel(request.User.DbName, RoleType.teacher))
+            {
+                request.User.DbName = new JWTController().GetUsername(request.User.DbName);
+                return Task.FromResult(new DatabaseMicroserivces().RemoveProjectThemeCoTeacher(request).Result);
+            }
+            NotValid();
+            return Task.FromResult(new intger() { Number = 0 });
+        }
         #endregion
         private void NotValid()
         {

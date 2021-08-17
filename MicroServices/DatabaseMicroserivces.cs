@@ -136,6 +136,10 @@ namespace SoSicencneSSHAgent.MicroServices
         {
             return Task.FromResult(channel.RemoveProjectTheme(infomation));
         }
+        public Task<intger> RemoveProjectThemeCoTeacher(ProjectThemeUserInfomation information)
+        {
+            return Task.FromResult(channel.RemoveProjectThemeCoTeacher(information));
+        }
         #endregion
     }
 }
