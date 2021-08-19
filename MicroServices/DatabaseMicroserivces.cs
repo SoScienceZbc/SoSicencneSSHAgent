@@ -27,82 +27,90 @@ namespace SoSicencneSSHAgent.MicroServices
         }
 
         #region Project
-        public Task<D_Project> GetProject(UserDbInfomation infomation)
+        public Task<D_Project> GetProject(UserDbInfomation information)
         {
             Console.WriteLine("Returning GetProject");
-            return Task.FromResult(channel.GetProject(infomation));
+            return Task.FromResult(channel.GetProject(information));
         }
-        public Task<intger> AddProject(ProjectUserInfomation infomation)
+        public Task<intger> AddProject(ProjectUserInfomation information)
         {
             Console.WriteLine("Returning AddProject");
-            return Task.FromResult(channel.AddProject(infomation));
+            return Task.FromResult(channel.AddProject(information));
         }
-        public Task<intger> EditProject(ProjectUserInfomation infomation)
+        public Task<intger> EditProject(ProjectUserInfomation information)
         {
             Console.WriteLine("Returning EditProject");
-            return Task.FromResult(channel.EditProject(infomation));
+            return Task.FromResult(channel.EditProject(information));
         }
-        public Task<intger> RemoveProject(ProjectUserInfomation infomation)
+        public Task<intger> RemoveProject(ProjectUserInfomation information)
         {
-            return Task.FromResult(channel.RemoveProject(infomation));
+            return Task.FromResult(channel.RemoveProject(information));
         }
-        public Task<D_Projects> GetProjects(UserDbInfomation infomation)
+        public Task<D_Projects> GetProjects(UserDbInfomation information)
         {
             Console.WriteLine("Returning GetProjects");
-            return Task.FromResult(channel.GetProjects(infomation));
+            return Task.FromResult(channel.GetProjects(information));
+        }
+        public Task<intger> AddProjectMember(MemberInformation information)
+        {
+            return Task.FromResult(channel.AddProjectMember(information));
+        }
+        public Task<intger> RemoveProjectMember(MemberInformation information)
+        {
+            return Task.FromResult(channel.RemoveProjectMember(information));
         }
         #endregion
         #region Docoment
-        public Task<D_Documents> GetDocuments(UserDbInfomation infomation)
+        public Task<D_Documents> GetDocuments(UserDbInfomation information)
         {
-            return Task.FromResult(channel.GetDocuments(infomation));
+            return Task.FromResult(channel.GetDocuments(information));
         }
         // documents
-        public Task<intger> AddDocument(D_Document infomation)
+        public Task<intger> AddDocument(D_Document information)
         {
-            return Task.FromResult(channel.AddDocument(infomation));
+            return Task.FromResult(channel.AddDocument(information));
         }
-        public Task<D_Document> GetDocument(UserDbInfomation infomation)
+        public Task<D_Document> GetDocument(UserDbInfomation information)
         {
-            return Task.FromResult(channel.GetDocument(infomation));
+            return Task.FromResult(channel.GetDocument(information));
         }
-        public Task<intger> UpdateDocument(D_Document infomation)
+        public Task<intger> UpdateDocument(D_Document information)
         {
-            return Task.FromResult(channel.UpdateDocument(infomation));
+            return Task.FromResult(channel.UpdateDocument(information));
         }
 
-        public Task<intger> RemoveDocument(ProjectUserInfomation infomation)
+        public Task<intger> RemoveDocument(ProjectUserInfomation information)
         {
-            return Task.FromResult(channel.RemoveDocument(infomation));
+            return Task.FromResult(channel.RemoveDocument(information));
         }
         #endregion
         #region Remote
-        public Task<intger> AddRemoteFile(D_RemoteFile infomation)
+        public Task<intger> AddRemoteFile(D_RemoteFile information)
         {
-            return Task.FromResult(channel.AddRemoteFile(infomation));
+            return Task.FromResult(channel.AddRemoteFile(information));
         }
-        public Task<D_RemoteFile> GetRemoteFile(UserDbInfomation infomation)
+        public Task<D_RemoteFile> GetRemoteFile(UserDbInfomation information)
         {
-            return Task.FromResult(channel.GetRemoteFile(infomation));
+            return Task.FromResult(channel.GetRemoteFile(information));
         }
-        public Task<D_RemoteFile> UpdateRemoteFile(D_RemoteFile infomation)
+        public Task<D_RemoteFile> UpdateRemoteFile(D_RemoteFile information)
         {
-            return Task.FromResult(channel.UpdateRemoteFile(infomation));
+            return Task.FromResult(channel.UpdateRemoteFile(information));
         }
-        public Task<intger> RemoveRemoteFile(UserDbInfomation infomation)
+        public Task<intger> RemoveRemoteFile(UserDbInfomation information)
         {
-            return Task.FromResult(channel.RemoveRemoteFile(infomation));
+            return Task.FromResult(channel.RemoveRemoteFile(information));
         }
-        public Task<D_RemoteFiles> GetRemoteFiles(UserDbInfomation infomation)
+        public Task<D_RemoteFiles> GetRemoteFiles(UserDbInfomation information)
         {
-            return Task.FromResult(channel.GetRemoteFiles(infomation));
+            return Task.FromResult(channel.GetRemoteFiles(information));
         }
         #endregion
         #region Teacher
-        public Task<D_Teacher> CheckAndInsertTeacher(D_Teacher infomation)
+        public Task<D_Teacher> CheckAndInsertTeacher(D_Teacher information)
         {
             Console.WriteLine("Returning CheckAndInsertTeacher");
-                return Task.FromResult(channel.CheckAndInsertTeacher(infomation));
+                return Task.FromResult(channel.CheckAndInsertTeacher(information));
         }
         #endregion
         #region Subject
@@ -110,9 +118,9 @@ namespace SoSicencneSSHAgent.MicroServices
         {
             return Task.FromResult(channel.AddSubject(subject));
         }
-        public Task<D_Subjects> GetSubjects(UserDbInfomation infomation)
+        public Task<D_Subjects> GetSubjects(UserDbInfomation information)
         {
-            return Task.FromResult(channel.GetSubjects(infomation));
+            return Task.FromResult(channel.GetSubjects(information));
         }
         #endregion
         #region Project Theme
@@ -120,21 +128,21 @@ namespace SoSicencneSSHAgent.MicroServices
         {
             return Task.FromResult(channel.AddProjectTheme(theme));
         }
-        public Task<D_ProjectThemes> GetProjectThemes(UserDbInfomation infomation)
+        public Task<D_ProjectThemes> GetProjectThemes(UserDbInfomation information)
         {
-            return Task.FromResult(channel.GetProjectThemes(infomation));
+            return Task.FromResult(channel.GetProjectThemes(information));
         }
-        public Task<D_ProjectThemes> GetProjectThemesFromSubject(ThemeFromSubject infomation)
+        public Task<D_ProjectThemes> GetProjectThemesFromSubject(ThemeFromSubject information)
         {
-            return Task.FromResult(channel.GetProjectThemesFromSubject(infomation));
+            return Task.FromResult(channel.GetProjectThemesFromSubject(information));
         }
-        public Task<intger> AddProjectThemeCoTeacher(ProjectThemeUserInfomation infomation)
+        public Task<intger> AddProjectThemeCoTeacher(ProjectThemeUserInfomation information)
         {
-            return Task.FromResult(channel.AddProjectThemeCoTeacher(infomation));
+            return Task.FromResult(channel.AddProjectThemeCoTeacher(information));
         }
-        public Task<intger> RemoveProjectTheme(ProjectThemeUserInfomation infomation)
+        public Task<intger> RemoveProjectTheme(ProjectThemeUserInfomation information)
         {
-            return Task.FromResult(channel.RemoveProjectTheme(infomation));
+            return Task.FromResult(channel.RemoveProjectTheme(information));
         }
         public Task<intger> RemoveProjectThemeCoTeacher(ProjectThemeUserInfomation information)
         {
