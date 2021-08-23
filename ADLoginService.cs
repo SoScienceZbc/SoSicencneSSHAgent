@@ -12,14 +12,17 @@ namespace SoSicencneSSHAgent
 {
     class ADLoginService : LoginService.LoginServiceBase
     {
+        private static DatabaseMicroserivces dbm = new DatabaseMicroserivces();
+        private static LoginServiceMicroserivces lsm = new LoginServiceMicroserivces();
+
         public override Task<LoginRepley> LoginAD(LoginRequset request, ServerCallContext context)
         {
             Console.WriteLine($"Host:{context.Host} called Method:{context.Method}");
-            var data = new LoginServiceMicroserivces().LoginAD(request, context).Result;
+            var data = lsm.LoginAD(request, context).Result;
             data.Token = new JWTController().CreateToken(request.Username, data.Admin ? RoleType.teacher : RoleType.user);
             if (data.Admin)
             {
-                new DatabaseMicroserivces().CheckAndInsertTeacher(new D_Teacher() { Username = request.Username });
+                dbm.CheckAndInsertTeacher(new D_Teacher() { Username = request.Username });
             }
             return Task.FromResult(data);
         }
