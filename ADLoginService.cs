@@ -29,27 +29,14 @@ namespace SoSicencneSSHAgent
 
         public override Task<LoginRepley> ValidateToken(LoginRepley request, ServerCallContext context)
         {
-            if (request.Admin)
+            LoginRepley loginRepley = new LoginRepley();
+            if (new JWTController().ValidateJWT(request.Token))
             {
-                if (new JWTController().ValidateRoleLevel(request.Token, RoleType.teacher)) 
-                {
-                    request.LoginSucsefull = true;
-                    return Task.FromResult(request);
-                } else
-                {
-                    return Task.FromResult(new LoginRepley());
-                }
-            } else
-            {
-                if (new JWTController().ValidateRoleLevel(request.Token, RoleType.user))
-                {
-                    request.LoginSucsefull = true;
-                    return Task.FromResult(request);
-                } else
-                {
-                    return Task.FromResult(new LoginRepley());
-                }
+                loginRepley.LoginSucsefull = true;
+                loginRepley.Token = request.Token;
+                loginRepley.Admin = new JWTController().GetRole(request.Token) == RoleType.teacher;
             }
+            return Task.FromResult(loginRepley);
         }
     }
 }

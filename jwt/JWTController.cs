@@ -88,6 +88,19 @@ namespace SoSicencneSSHAgent.jwt
             }
         }
 
+        public RoleType GetRole(string token)
+        {
+            IAuthService authService = new JWTService(GetSecret());
+            if (!authService.IsTokenValid(token))
+                return 0;
+            else
+            {
+                List<Claim> claims = authService.GetTokenClaims(token).ToList();
+
+                return (RoleType)Convert.ToInt32(claims.FirstOrDefault(e => e.Type.Equals(ClaimTypes.Role)).Value);
+            }
+        }
+
 #region Private Method
         private string GetSecret()
         {
