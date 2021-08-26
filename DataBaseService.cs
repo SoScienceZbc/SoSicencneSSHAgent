@@ -206,6 +206,7 @@ namespace GrpcServiceForAngular.Services.DataBase
             return Task.FromResult(new intger() { Number = 0 });
         }
         #endregion
+
         private void NotValid()
         {
             Console.ForegroundColor = ConsoleColor.Red;
