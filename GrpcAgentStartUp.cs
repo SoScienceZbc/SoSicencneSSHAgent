@@ -49,7 +49,7 @@ namespace SoSicencneSSHAgent
             {
 
                 endpoints.MapGrpcService<DataBaseService>().EnableGrpcWeb();
-                endpoints.MapGrpcService<LoginServiceMicroserivces>().EnableGrpcWeb();
+                endpoints.MapGrpcService<ADLoginService>().EnableGrpcWeb();
 
             });            
         }
