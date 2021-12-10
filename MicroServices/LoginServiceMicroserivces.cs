@@ -25,7 +25,7 @@ namespace SoSicencneSSHAgent.MicroServices
         public LoginServiceMicroserivces()
         {
             if (channel == null)
-                channel = new LoginService.LoginServiceClient(GrpcChannel.ForAddress("http://localhost:48053", new GrpcChannelOptions
+                channel = new LoginService.LoginServiceClient(GrpcChannel.ForAddress("https://localhost:48053", new GrpcChannelOptions
                 {
                     HttpClient = new HttpClient(handler),
                     Credentials = ChannelCredentials.Insecure

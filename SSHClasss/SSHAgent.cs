@@ -23,8 +23,8 @@ namespace SoSicencneSSHAgent.SSHClasss
         ConnectionInfo connectionInfo;
 
 
-        string sshServer = "40.87.150.18";
-        int port = 2222;
+        string sshServer = "93.191.157.106";
+        int port = 22;
         string username = "SoScienceUser";
 
         public SshClient ClientS { get => clientS; private set => clientS = value; }
@@ -41,6 +41,7 @@ namespace SoSicencneSSHAgent.SSHClasss
                 port,
                 username,
                 new PrivateKeyAuthenticationMethod(username, new PrivateKeyFile("SoScienceServer_key.pem")));
+                
 
             clientS = new SshClient(connectionInfo);
             //CreateSshTunnel();
@@ -50,6 +51,7 @@ namespace SoSicencneSSHAgent.SSHClasss
         public void ConnnectToSShServer()
         {
             clientS.Connect();
+            Console.WriteLine("Client Connected");
         }
         public void CreateSshStream()
         {
@@ -60,9 +62,9 @@ namespace SoSicencneSSHAgent.SSHClasss
             }
 
             Console.WriteLine($"{clientS.ConnectionInfo.Username } : Is connected");
-            sc = clientS.CreateCommand("ps -aux -f -all");
+            sc = clientS.CreateCommand("ls -al");
             sc.Execute();
-            stream = clientS.CreateShellStream("ps -aux -f -all", 80, 24, 800, 600, 2048);
+            stream = clientS.CreateShellStream("ls -al", 80, 24, 800, 600, 2048);
             string answer = sc.Result;
             Console.WriteLine(answer);
 
@@ -73,8 +75,8 @@ namespace SoSicencneSSHAgent.SSHClasss
             //sendCommand("ssh -R 33700:localhost:33700 SoScienceUser@40.87.150.18");
 
             //sendCommand("ssh -T -p 33700 SoScienceUser@localhost");
-
             SshTunnel sshtunnel = new SshTunnel(this.clientS);
+            //CreateSshStream();
         }
         #endregion
         #region SSHCommands
@@ -171,7 +173,7 @@ namespace SoSicencneSSHAgent.SSHClasss
 
                     client.Connect();
                 }
-                ForwardedPortRemote portRemote = new ForwardedPortRemote(System.Net.IPAddress.Parse("127.0.0.1"), 33700, System.Net.IPAddress.Loopback, 33700);
+                ForwardedPortRemote portRemote = new ForwardedPortRemote(System.Net.IPAddress.Parse("127.0.0.1"), 33701, System.Net.IPAddress.Parse("127.0.0.1"), 33701);
                 portRemote.RequestReceived += new EventHandler<PortForwardEventArgs>(port_Request);
                 portRemote.Exception += new EventHandler<ExceptionEventArgs>(Port_Ex);
                 client.KeepAliveInterval = TimeSpan.FromSeconds(10);
@@ -184,8 +186,8 @@ namespace SoSicencneSSHAgent.SSHClasss
                 {
                     Console.WriteLine("BoundHost: " + portRemote.BoundHost);
                     Console.WriteLine("BoundPort:" + portRemote.BoundPort);
-                    Console.WriteLine($"Clinet Infomation : {client.ConnectionInfo.Username}\n" +
-                        $"Host : {client.ConnectionInfo.Host}\nProxyHost: {client.ConnectionInfo.ProxyHost} The tunnel have been createde..");
+                    Console.WriteLine($"Client Information : {client.ConnectionInfo.Username}\n" +
+                        $"Host : {client.ConnectionInfo.Host}\nProxyHost: {client.ConnectionInfo.ProxyHost} The tunnel has been created...");
                 }
                 else
                 {
@@ -239,7 +241,7 @@ namespace SoSicencneSSHAgent.SSHClasss
         /// <param name="s"></param>
         public void Port_Ex(object sender, ExceptionEventArgs s)
         {
-            Console.WriteLine("Exaction" + s.Exception.Message);
+            Console.WriteLine("Exception from sshagent " + s.Exception.Message);
         }
         #endregion
     }

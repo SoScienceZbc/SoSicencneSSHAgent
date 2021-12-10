@@ -3,6 +3,7 @@ using SoSicencneSSHAgent.jwt.managers;
 using SoSicencneSSHAgent.jwt.models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
@@ -17,8 +18,9 @@ namespace SoSicencneSSHAgent.jwt
                 if (_config == null)
 #if DEBUG
                     _config = new ConfigurationBuilder().AddJsonFile("./SSHAgentConfig.json").Build();
+
 #else
-                    _config = new ConfigurationBuilder().AddJsonFile("/home/soscienceadmin/Services/SSH_Agent/SSHAgentConfig.json").Build();
+                    _config = new ConfigurationBuilder().AddJsonFile(Directory.GetCurrentDirectory() + "/SSH_Agent/SSHAgentConfig.json").Build();
 #endif
 
                 return _config;

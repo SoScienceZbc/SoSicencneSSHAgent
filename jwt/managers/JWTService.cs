@@ -92,7 +92,8 @@ namespace SoSicencneSSHAgent.jwt.managers
             {
                 ValidateIssuer = false,
                 ValidateAudience = false,
-                IssuerSigningKey = GetSymmetricSecurityKey()
+                IssuerSigningKey = GetSymmetricSecurityKey(),
+                ValidateLifetime = false
             };
         }
         #endregion

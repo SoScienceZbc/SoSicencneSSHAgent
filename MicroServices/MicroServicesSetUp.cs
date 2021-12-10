@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Server.Kestrel.Core;
 using SoSicencneSSHAgent.SSHClasss;
 using System.Net.Http;
 using Grpc.Net.Client.Web;
+using System.IO;
 
 namespace SoSicencneSSHAgent.MicroServices
 {
@@ -20,8 +21,10 @@ namespace SoSicencneSSHAgent.MicroServices
         {
             //TODO: Implement a ssl here and uncomment appcontext.setswitch.
             //TODO: Implement SSL certificat on port 33701 via kj.UserHttps(ssl_certPath,Name);
-            //AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
-            //AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2Support", true);
+            AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
+            AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2Support", true);
+            string cert = "/home/soscience/Desktop/Services/soscience.dk.pfx";
+            string pass = File.ReadAllText("/home/soscience/Desktop/Services/PassPhrase.txt");
             await Host.CreateDefaultBuilder().ConfigureWebHostDefaults(o =>
             {
                 o.UseKestrel().UseStartup<GrpcAgentStartUp>().ConfigureKestrel(k =>
@@ -33,7 +36,8 @@ namespace SoSicencneSSHAgent.MicroServices
                     k.Listen(System.Net.IPAddress.Any, 33701, kj =>
                     {
                         kj.Protocols = HttpProtocols.Http2;
-                        //kj.UseHttps();
+                        kj.UseHttps(cert,pass);
+                        //TODO: Convert SSL to OpenSSL
                     });
                 });
             }).Build().StartAsync(stoppingToken);
