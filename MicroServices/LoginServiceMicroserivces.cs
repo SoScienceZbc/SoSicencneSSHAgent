@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.DirectoryServices.Protocols;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -21,15 +22,22 @@ namespace SoSicencneSSHAgent.MicroServices
     {
         static LoginService.LoginServiceClient channel;
         static GrpcWebHandler handler = new GrpcWebHandler(GrpcWebMode.GrpcWebText, new HttpClientHandler());
-        
         public LoginServiceMicroserivces()
         {
+            
             if (channel == null)
+            {
+                Console.WriteLine("Initiate LSM Channel");
                 channel = new LoginService.LoginServiceClient(GrpcChannel.ForAddress("https://localhost:48053", new GrpcChannelOptions
                 {
                     HttpClient = new HttpClient(handler),
-                    Credentials = ChannelCredentials.Insecure
+                    Credentials = new SslCredentials()
                 }));
+                Console.WriteLine("Channel Created");
+            } else
+            {
+                Console.WriteLine("Channel is not null");
+            }
 
         }
 

@@ -176,10 +176,14 @@ namespace SoSicencneSSHAgent.SSHClasss
                 ForwardedPortRemote portRemote = new ForwardedPortRemote(System.Net.IPAddress.Parse("127.0.0.1"), 33701, System.Net.IPAddress.Parse("127.0.0.1"), 33701);
                 portRemote.RequestReceived += new EventHandler<PortForwardEventArgs>(port_Request);
                 portRemote.Exception += new EventHandler<ExceptionEventArgs>(Port_Ex);
+             
                 client.KeepAliveInterval = TimeSpan.FromSeconds(10);
                 client.AddForwardedPort(portRemote);
                 foreach (var item in client.ForwardedPorts)
+                {
+                    Console.WriteLine("Trying to start method");
                     item.Start();
+                }
 
 
                 if (portRemote.IsStarted && client.IsConnected)
@@ -241,7 +245,10 @@ namespace SoSicencneSSHAgent.SSHClasss
         /// <param name="s"></param>
         public void Port_Ex(object sender, ExceptionEventArgs s)
         {
-            Console.WriteLine("Exception from sshagent " + s.Exception.Message);
+            Console.WriteLine("Inner Exception from sshagent " + s.Exception.InnerException + "\r\n");
+            Console.WriteLine("Exception from sshagent " + s.Exception.Message + "\r\n");
+            Console.WriteLine("Exception Data from sshagent " + s.Exception.Data + "\r\n");
+            Console.WriteLine("Exception Source from sshagent " + s.Exception.Source + "\r\n");
         }
         #endregion
     }

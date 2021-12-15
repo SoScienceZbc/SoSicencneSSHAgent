@@ -4,7 +4,8 @@
       "commandName": "Project",
       "remoteDebugEnabled": false,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "GRPC_DEFAULT_SSL_ROOT_FILE_PATH": "/home/soscience/Desktop/Services/soscience.dk.crt"
       }
     }
   }

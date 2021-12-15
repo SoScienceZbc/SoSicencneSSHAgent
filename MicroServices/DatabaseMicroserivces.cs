@@ -20,9 +20,14 @@ namespace SoSicencneSSHAgent.MicroServices
         public DatabaseMicroserivces()
         {
             if (channel == null)
-                channel = new GrpcDatabaseProject.GrpcDatabaseProjectClient(GrpcChannel.ForAddress("http://localhost:48041", new GrpcChannelOptions { 
-                    HttpClient = new HttpClient(handler), 
-                    Credentials = ChannelCredentials.Insecure }));
+            {
+                channel = new GrpcDatabaseProject.GrpcDatabaseProjectClient(GrpcChannel.ForAddress("http://localhost:48041", new GrpcChannelOptions
+                {
+                    HttpClient = new HttpClient(handler),
+                    Credentials = ChannelCredentials.Insecure
+                }));
+            }
+                
 
         }
 
