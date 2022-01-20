@@ -22,8 +22,8 @@ namespace SoSicencneSSHAgent.SSHClasss
         ShellStream stream;
         ConnectionInfo connectionInfo;
 
-
         string sshServer = "93.191.157.106";
+        //string sshServer = "soscience.dk";
         int port = 22;
         string username = "SoScienceUser";
 
@@ -32,7 +32,7 @@ namespace SoSicencneSSHAgent.SSHClasss
         public ShellStream Stream { get => stream; private set => stream = value; }
         public ConnectionInfo ConnectionInfo { get => connectionInfo; private set => connectionInfo = value; }
         #endregion
-        #region Construtor
+        #region Constructor
         public SSHAgent()
         {
             connectionInfo =
@@ -170,10 +170,10 @@ namespace SoSicencneSSHAgent.SSHClasss
             {
                 if (!client.IsConnected)
                 {
-
+                    Console.WriteLine();
                     client.Connect();
                 }
-                ForwardedPortRemote portRemote = new ForwardedPortRemote(System.Net.IPAddress.Parse("127.0.0.1"), 33701, System.Net.IPAddress.Parse("127.0.0.1"), 33701);
+                ForwardedPortRemote portRemote = new ForwardedPortRemote(System.Net.IPAddress.Parse("127.0.0.1"), 33701, System.Net.IPAddress.Loopback, 33701);
                 portRemote.RequestReceived += new EventHandler<PortForwardEventArgs>(port_Request);
                 portRemote.Exception += new EventHandler<ExceptionEventArgs>(Port_Ex);
              
@@ -185,13 +185,12 @@ namespace SoSicencneSSHAgent.SSHClasss
                     item.Start();
                 }
 
-
                 if (portRemote.IsStarted && client.IsConnected)
                 {
                     Console.WriteLine("BoundHost: " + portRemote.BoundHost);
                     Console.WriteLine("BoundPort:" + portRemote.BoundPort);
                     Console.WriteLine($"Client Information : {client.ConnectionInfo.Username}\n" +
-                        $"Host : {client.ConnectionInfo.Host}\nProxyHost: {client.ConnectionInfo.ProxyHost} The tunnel has been created...");
+                        $"Host : {client.ConnectionInfo.Host}\nPort: {client.ConnectionInfo.Port}\nThe tunnel has been created...");
                 }
                 else
                 {
@@ -233,22 +232,41 @@ namespace SoSicencneSSHAgent.SSHClasss
         /// <param name="s"></param>
         public void port_Request(object sender, PortForwardEventArgs s)
         {
+            Console.WriteLine("\n******Port_Request******");
             ForwardedPortRemote senders = (ForwardedPortRemote)sender;
+            Console.WriteLine("callerPort: " + senders.Port);
+            Console.WriteLine("Sender: " + sender);
 
             Console.WriteLine($"PortRemote: {s.OriginatorHost} :{s.OriginatorPort}\ncallerHost: {senders.Host}" +
-                $"\nCallerBoundPort: {senders.BoundPort}\nForwardRemotePortStarteted: {senders.IsStarted}");
+                $"\nCallerBoundPort: {senders.BoundPort}\nForwardRemotePortStarted: {senders.IsStarted}");
+            Console.WriteLine("******Port_Request******\n");
         }
         /// <summary>
-        /// This event fires evey time there is a exception on the remote port.
+        /// This event fires evey time there is an exception on the remote port.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="s"></param>
         public void Port_Ex(object sender, ExceptionEventArgs s)
         {
-            Console.WriteLine("Inner Exception from sshagent " + s.Exception.InnerException + "\r\n");
-            Console.WriteLine("Exception from sshagent " + s.Exception.Message + "\r\n");
-            Console.WriteLine("Exception Data from sshagent " + s.Exception.Data + "\r\n");
-            Console.WriteLine("Exception Source from sshagent " + s.Exception.Source + "\r\n");
+            Console.WriteLine("\n******Port_Ex******");
+            /*ForwardedPortRemote senders = (ForwardedPortRemote)sender;
+            Console.WriteLine("Client connected: " + client.IsConnected);
+            foreach (var item in client.ForwardedPorts)
+            {
+                Console.WriteLine("Client forwardedport: " + item);
+                Console.WriteLine("Client forwardedport is started: " + item.IsStarted);
+            }
+            Console.WriteLine("Forwardedport is started: " + senders.IsStarted);*/
+
+            Console.WriteLine("\nPort_Ex: " + s.Exception);
+            //Console.WriteLine("Inner Exception from sshagent " + s.Exception.InnerException);
+            Console.WriteLine("Port_Ex Message: " + s.Exception.Message);
+            //Console.WriteLine("Port_Ex Data: " + s.Exception.Data);
+            //Console.WriteLine("Port_Ex Source: " + s.Exception.Source);
+
+            //Console.WriteLine("Port_Ex StackTrace: " + s.Exception.StackTrace);
+            Console.WriteLine("Port_Ex TargetSite: " + s.Exception.TargetSite);
+            Console.WriteLine("******Port_Ex******\n");
         }
         #endregion
     }

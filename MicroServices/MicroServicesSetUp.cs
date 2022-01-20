@@ -21,10 +21,11 @@ namespace SoSicencneSSHAgent.MicroServices
         {
             //TODO: Implement a ssl here and uncomment appcontext.setswitch.
             //TODO: Implement SSL certificat on port 33701 via kj.UserHttps(ssl_certPath,Name);
-            AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
+            //AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
             AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2Support", true);
             string cert = "/home/soscience/Desktop/Services/soscience.dk.pfx";
             string pass = File.ReadAllText("/home/soscience/Desktop/Services/PassPhrase.txt");
+            Console.WriteLine("password length: " + pass.Length);
             await Host.CreateDefaultBuilder().ConfigureWebHostDefaults(o =>
             {
                 o.UseKestrel().UseStartup<GrpcAgentStartUp>().ConfigureKestrel(k =>

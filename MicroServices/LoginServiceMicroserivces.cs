@@ -20,15 +20,15 @@ namespace SoSicencneSSHAgent.MicroServices
 {
     public class LoginServiceMicroserivces
     {
-        static LoginService.LoginServiceClient channel;
+        static LoginService.LoginServiceClient client;
         static GrpcWebHandler handler = new GrpcWebHandler(GrpcWebMode.GrpcWebText, new HttpClientHandler());
         public LoginServiceMicroserivces()
         {
             
-            if (channel == null)
+            if (client == null)
             {
                 Console.WriteLine("Initiate LSM Channel");
-                channel = new LoginService.LoginServiceClient(GrpcChannel.ForAddress("https://localhost:48053", new GrpcChannelOptions
+                client = new LoginService.LoginServiceClient(GrpcChannel.ForAddress("https://localhost:48053", new GrpcChannelOptions
                 {
                     HttpClient = new HttpClient(handler),
                     Credentials = new SslCredentials()
@@ -43,7 +43,7 @@ namespace SoSicencneSSHAgent.MicroServices
 
         public Task<LoginRepley> LoginAD(LoginRequset requset, ServerCallContext context )
         {
-            return Task.FromResult(channel.LoginAD(requset));
+            return Task.FromResult(client.LoginAD(requset));
         }
        
     }
