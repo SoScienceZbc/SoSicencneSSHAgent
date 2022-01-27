@@ -19,29 +19,30 @@ namespace SoSicencneSSHAgent.MicroServices
     {
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            //TODO: Implement a ssl here and uncomment appcontext.setswitch.
-            //TODO: Implement SSL certificat on port 33701 via kj.UserHttps(ssl_certPath,Name);
             //AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
             AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2Support", true);
             string cert = "/home/soscience/Desktop/Services/soscience.dk.pfx";
             string pass = File.ReadAllText("/home/soscience/Desktop/Services/PassPhrase.txt");
-            Console.WriteLine("password length: " + pass.Length);
             await Host.CreateDefaultBuilder().ConfigureWebHostDefaults(o =>
             {
+                Console.WriteLine("Awaiting config");
                 o.UseKestrel().UseStartup<GrpcAgentStartUp>().ConfigureKestrel(k =>
                 {
+                    Console.WriteLine("Configuring kestrel");
                     k.Listen(System.Net.IPAddress.Any, 33700, kj =>
                     {
+                        Console.WriteLine("Using http");
                         kj.Protocols = HttpProtocols.Http1;
                     });
                     k.Listen(System.Net.IPAddress.Any, 33701, kj =>
                     {
+                        Console.WriteLine("Using https");
                         kj.Protocols = HttpProtocols.Http2;
-                        kj.UseHttps(cert,pass);
-                        //TODO: Convert SSL to OpenSSL
+                        kj.UseHttps(cert, pass.Trim());
                     });
                 });
             }).Build().StartAsync(stoppingToken);
+            Console.WriteLine("Config done");
         }
     }
 }

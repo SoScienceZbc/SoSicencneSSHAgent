@@ -20,7 +20,7 @@ namespace SoSicencneSSHAgent.jwt
                     _config = new ConfigurationBuilder().AddJsonFile("./SSHAgentConfig.json").Build();
 
 #else
-                    _config = new ConfigurationBuilder().AddJsonFile(Directory.GetCurrentDirectory() + "/SSH_Agent/SSHAgentConfig.json").Build();
+                    _config = new ConfigurationBuilder().AddJsonFile(Directory.GetCurrentDirectory() + "/SSHAgentConfig.json").Build();
 #endif
 
                 return _config;

@@ -7,6 +7,16 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="appsettings.json" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="appsettings.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="Google.Protobuf" Version="3.17.2" />
 		<PackageReference Include="Grpc.AspNetCore" Version="2.37.0" />
 		<PackageReference Include="Grpc.AspNetCore.Server" Version="2.37.0" />

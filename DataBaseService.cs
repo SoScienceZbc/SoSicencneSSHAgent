@@ -47,9 +47,14 @@ namespace GrpcServiceForAngular.Services.DataBase
         }
         public override Task<D_Projects> GetProjects(UserDbInfomation request, ServerCallContext context)
         {
+            Console.WriteLine("Entered DataBaseService GetProjects");
             request.DbName = new JWTController().GetUsername(request.DbName);
             if (request.DbName != "")
+            {
+                Console.WriteLine("DbName request not empty");
                 return Task.FromResult(dbm.GetProjects(request).Result);
+            }
+            Console.WriteLine("DbName request empty");
             return Task.FromResult(new D_Projects());
         }
         public override Task<intger> AddProjectMember(MemberInformation request, ServerCallContext context)

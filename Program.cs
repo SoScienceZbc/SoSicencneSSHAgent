@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SoSicencneSSHAgent.jwt;
@@ -23,16 +24,23 @@ namespace SoSicencneSSHAgent
             Thread th = new Thread(agent.CreateSshTunnel);
             th.Start();
 #endif
-            CreateHostBuilder(args).Build().StartAsync();
+            //CreateHostBuilder(args).Build().StartAsync();
+            CreateHostBuilder(args).Build().Run();
             Console.WriteLine("The BackGroundservice have been started, press enter to stop this program.");
             Console.ReadLine();
         }
-
+        /*
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+            .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseStartup<GrpcAgentStartUp>();
+                });*/
+        
         public static IHostBuilder CreateHostBuilder(string[] args) =>
            Host.CreateDefaultBuilder(args).ConfigureServices((hostContext, services) =>
            {               
                services.AddHostedService<MicroServicesSetUp>();
-
            });
     }
 }
