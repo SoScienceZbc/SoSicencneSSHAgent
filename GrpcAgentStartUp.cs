@@ -50,6 +50,7 @@ namespace SoSicencneSSHAgent
 
                 endpoints.MapGrpcService<DataBaseService>().EnableGrpcWeb();
                 endpoints.MapGrpcService<ADLoginService>().EnableGrpcWeb();
+                endpoints.MapGrpcService<VideoService>().EnableGrpcWeb();
 
             });            
         }
