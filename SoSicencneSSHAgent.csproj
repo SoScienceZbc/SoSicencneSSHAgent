@@ -8,6 +8,7 @@
 
 	<ItemGroup>
 	  <None Remove="appsettings.json" />
+	  <None Remove="Protos\RemoteMediaProto.proto" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -38,6 +39,7 @@
 	<ItemGroup>
 		<Protobuf Include="Protos\Database.proto" />
 		<Protobuf Include="Protos\AdLookupProto.proto" />
+		<Protobuf Include="Protos\RemoteMediaProto.proto" />
 	</ItemGroup>
 
 </Project>
