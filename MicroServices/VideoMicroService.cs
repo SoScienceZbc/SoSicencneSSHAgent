@@ -24,7 +24,7 @@ namespace SoSicencneSSHAgent.MicroServices
         public VideoMicroService()
         {
             AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2Support", true);
-            client = CreateGrpcClient("https://localhost:48041"); //redirects to DataBaseDocumentService for now. Change it later to redirect to MediaService instead
+            client = CreateGrpcClient("https://localhost:48048"); //redirects to MediaService
         }
 
         #region GrpcClientSetup
