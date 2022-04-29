@@ -14,14 +14,14 @@ using System.Net.Security;
 
 namespace SoSicencneSSHAgent.MicroServices
 {
-    class VideoMicroService
+    class MediaMicroService
     {
         static RemoteMediaService.RemoteMediaServiceClient client;
 
         //This is a hashed serial used in DangerousServerCertificateCustomValidationCallback() to validate the server certificate.
         private string HashedSerial { get; } = File.ReadAllText(Directory.GetCurrentDirectory() + "/HashedSerial.txt");
 
-        public VideoMicroService()
+        public MediaMicroService()
         {
             AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2Support", true);
             client = CreateGrpcClient("https://localhost:48048"); //redirects to MediaService
@@ -85,10 +85,10 @@ namespace SoSicencneSSHAgent.MicroServices
         }
         #endregion
 
-        public Task<VideoReply> SendVideo(VideoRequest request)
+        public Task<MediaReply> SendMedia(MediaRequest request)
         {
-            Console.WriteLine("Entered SendVideo() in VideoMicroService");
-            return Task.FromResult(client.SendVideo(request));
+            Console.WriteLine("Entered SendMedia() in MediaMicroService");
+            return Task.FromResult(client.SendMedia(request));
         }
     }
 }
