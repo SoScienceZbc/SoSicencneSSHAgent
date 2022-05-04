@@ -90,5 +90,10 @@ namespace SoSicencneSSHAgent.MicroServices
             Console.WriteLine("Entered SendMedia() in MediaMicroService");
             return Task.FromResult(client.SendMedia(request));
         }
+        public Task<MediaRequests> GetMedias(UserDbInformation user)
+        {
+            Console.WriteLine("Entered GetMedias() in MediaMicroService");
+            return Task.FromResult(client.GetMedias(user));
+        }
     }
 }

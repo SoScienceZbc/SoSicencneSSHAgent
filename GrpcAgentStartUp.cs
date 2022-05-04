@@ -20,7 +20,11 @@ namespace SoSicencneSSHAgent
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddGrpc();            
+            services.AddGrpc(op =>
+            {
+                op.MaxReceiveMessageSize = null;
+                op.MaxSendMessageSize = null;
+            });
             //services.AddCors(o =>
             //{
             //    o.AddPolicy("MyPolicy", builder =>
@@ -31,7 +35,7 @@ namespace SoSicencneSSHAgent
             //        builder.WithExposedHeaders("Grpc-Status", "Grpc-Message");
             //    });
             //});
-            
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

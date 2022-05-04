@@ -29,6 +29,7 @@ namespace SoSicencneSSHAgent.MicroServices
                 o.UseKestrel().UseStartup<GrpcAgentStartUp>().ConfigureKestrel(k =>
                 {
                     Console.WriteLine("Configuring kestrel");
+                    k.Limits.MaxRequestBodySize = null; //unlimited. Not sure if good idea in the end
                     k.Listen(System.Net.IPAddress.Any, 33700, kj =>
                     {
                         Console.WriteLine("Using http");
