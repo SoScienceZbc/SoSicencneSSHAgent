@@ -21,10 +21,10 @@ namespace SoSicencneSSHAgent
             return Task.FromResult(vr);
         }
 
-        public override Task<MediaRequests> GetMedias(UserDbInformation user, ServerCallContext context)
+        public override Task<MediaRequests> GetMedias(ProjectInformation project, ServerCallContext context)
         {
             Console.WriteLine($"Host:{context.Host} called Method:{context.Method}");
-            return mediaHandler.GetMedias(user);
+            return mediaHandler.GetMedias(project);
         }
     }
 }
