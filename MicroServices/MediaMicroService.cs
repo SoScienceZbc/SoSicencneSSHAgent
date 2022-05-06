@@ -24,7 +24,7 @@ namespace SoSicencneSSHAgent.MicroServices
         public MediaMicroService()
         {
             AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2Support", true);
-            client = CreateGrpcClient("https://localhost:48048"); //redirects to MediaService
+            client = CreateGrpcClient("https://localhost:48048"); //redirects to SoScienceMediaService
         }
 
         #region GrpcClientSetup
@@ -94,6 +94,21 @@ namespace SoSicencneSSHAgent.MicroServices
         {
             Console.WriteLine("Entered GetMedias() in MediaMicroService");
             return Task.FromResult(client.GetMedias(project));
+        }
+        public Task<RetrieveMediaReply> RetrieveMedia(RetrieveMediaRequest request)
+        {
+            Console.WriteLine("Entered RetrieveMedia() in MediaMicroService");
+            return Task.FromResult(client.RetrieveMedia(request));
+        }
+        public Task<MediaReply> DeleteMedia(RetrieveMediaRequest request)
+        {
+            Console.WriteLine("Entered DeleteMedia() in MediaMicroService");
+            return Task.FromResult(client.DeleteMedia(request));
+        }
+        public Task<MediaReply> UpdateMedia(ChangeTitleRequest request)
+        {
+            Console.WriteLine("Entered UpdateMedia() in MediaMicroService");
+            return Task.FromResult(client.UpdateMedia(request));
         }
     }
 }
